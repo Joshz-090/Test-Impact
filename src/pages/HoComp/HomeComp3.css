@@ -1,0 +1,101 @@
+/* HomeComp3.css */
+.stats-background {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* This makes the background static while scrolling */
+  height: 35vh;
+  width: 100%;
+  position: relative;
+}
+
+.stats-container {
+  max-height: 35vh;
+  padding: 2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  border-radius: 10px;
+  color: var(--text-color);
+}
+
+.stats-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.highlight {
+  font-weight: bold;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stats-background {
+  transition: all 0.5s ease;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  transition: all 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .stats-background {
+    height: 20vh;
+  }
+  .stats-container {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1rem;
+  }
+  .stats-header h2 {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stat-number {
+    font-size: 1.7rem;
+  }
+  .stat-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* HomeComp3.css */
+
+/* Rest of your existing styles */

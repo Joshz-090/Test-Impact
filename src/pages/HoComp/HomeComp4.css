@@ -1,0 +1,329 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap");
+
+/* Add box-sizing globally for this component */
+.services-container,
+.services-container * {
+  box-sizing: border-box;
+}
+
+.services-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.services-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #d4af37;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.services-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: sans-serif;
+  text-transform: none;
+  font-weight: normal;
+}
+
+.services-carousel-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.services-carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 600px;
+  perspective: 1000px;
+  width: 80%;
+  max-width: 100%;
+  /* Only show one card at a time on mobile */
+}
+
+/* Navigation Buttons below the card */
+.carousel-nav-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.nav-button {
+  position: static;
+  background: #fff;
+  border: 2px solid #d4af37;
+  color: #d4af37;
+  cursor: pointer;
+  z-index: 10;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nav-button:hover,
+.nav-button:focus {
+  background: #d4af37;
+  color: #fff;
+  border-color: #b89935;
+  outline: none;
+}
+
+.nav-button svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.service-card {
+  position: absolute;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image-container {
+  height: 50%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-text-container {
+  height: 50%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.service-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #222;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.service-card p {
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-family: sans-serif;
+  text-transform: none;
+  font-weight: normal;
+  font-size: 0.95rem;
+}
+
+.learn-more {
+  color: #d4af37;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Montserrat", sans-serif;
+  display: inline-block;
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+.learn-more:hover {
+  color: #b89935;
+}
+
+/* Card Positions */
+.service-card.left {
+  transform: translateX(-80%) scale(0.9);
+  opacity: 0.8;
+  z-index: 1;
+  height: 450px;
+}
+
+.service-card.center {
+  transform: translateX(0) scale(1.1);
+  z-index: 3;
+  opacity: 1;
+  border: 2px solid #d4af37;
+  height: 500px;
+}
+
+.service-card.right {
+  transform: translateX(80%) scale(0.9);
+  opacity: 0.8;
+  z-index: 1;
+  height: 450px;
+}
+
+.service-card.overflow-right {
+  transform: translateX(160%) scale(0.8);
+  opacity: 0;
+  z-index: 0;
+}
+
+.service-card.overflow-left {
+  transform: translateX(-160%) scale(0.8);
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .services-carousel {
+    height: 400px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .service-card {
+    width: 90vw;
+    max-width: 320px;
+    min-width: 220px;
+    height: 350px;
+  }
+
+  .service-card.left {
+    height: 320px;
+    transform: translateX(-60%) scale(0.9);
+  }
+
+  .service-card.center {
+    height: 350px;
+  }
+
+  .service-card.right {
+    height: 320px;
+    transform: translateX(60%) scale(0.9);
+  }
+
+  .service-card.overflow-right {
+    transform: translateX(120%) scale(0.8);
+  }
+
+  .service-card.overflow-left {
+    transform: translateX(-120%) scale(0.8);
+  }
+
+  .nav-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .card-text-container {
+    padding: 0.8rem;
+  }
+
+  .service-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .service-card p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .services-container {
+    padding: 2rem 0.5rem;
+    overflow-x: hidden;
+  }
+  .services-title {
+    font-size: 1.5rem;
+  }
+  .services-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .services-carousel {
+    height: auto;
+    min-height: 320px;
+    width: 100%;
+    /* Remove margin: 0 -10vw; */
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    perspective: none;
+    max-width: 100%;
+  }
+  .service-card,
+  .service-card.left,
+  .service-card.right,
+  .service-card.overflow-right,
+  .service-card.overflow-left {
+    display: none;
+  }
+  .service-card.center {
+    display: flex;
+    position: static;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: 1;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 320px;
+    margin: 0 0 1.5rem 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eee;
+  }
+  .carousel-nav-buttons {
+    margin-top: 1rem;
+    gap: 1.5rem;
+    display: flex !important;
+  }
+  .nav-button {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    display: flex !important;
+  }
+  .services-carousel::-webkit-scrollbar {
+    display: none;
+  }
+}
