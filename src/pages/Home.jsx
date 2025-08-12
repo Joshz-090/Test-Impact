@@ -17,7 +17,6 @@ const Home = () => {
     "Visual Arts Club",
     "Hebar Art Gallery",
     "Community Organizations",
-
   ];
 
   const events = [
@@ -134,7 +133,8 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="flex items-center justify-center space-x-8 md:space-x-16">
+          {/* Make it wrap & stay inside bounds */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 md:gap-16 max-w-full overflow-x-auto">
             {partners.map((partner, index) => (
               <div
                 key={partner}
@@ -144,7 +144,7 @@ const Home = () => {
                     : "text-gray-600 scale-90"
                 }`}
               >
-                <div className="text-lg font-semibold font-['Montserrat']">
+                <div className="text-lg font-semibold font-['Montserrat'] whitespace-nowrap">
                   {partner}
                 </div>
               </div>
