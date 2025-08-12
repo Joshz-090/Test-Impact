@@ -1,5 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -12,10 +16,9 @@ import Team from "./pages/Team";
 import Events from "./pages/Events";
 import Contact from "./pages/Contact";
 
-
 function App() {
   return (
-    <Router basename="/Project-002-Impact-Production">
+    <Router basename="/">
       <div className="min-h-screen bg-white">
         <Navbar />
         <main>
