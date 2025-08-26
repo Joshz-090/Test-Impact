@@ -4,7 +4,7 @@ import Transition from "../components/Transition";
 import HomeComp from "./HoComp/HomeComp";
 import HomeComp3 from "./HoComp/HomeComp3";
 import HomeComp4 from "./HoComp/HomeComp4";
-import HomeComp7 from "./HoComp/HomeCome6";
+import HomeComp6 from "./HoComp/HomeCome6"; // Fixed import
 import backgroundImage from "../assets/images/Screenshot.png";
 
 const Home = () => {
@@ -54,7 +54,7 @@ const Home = () => {
       setCurrentSlide((prev) => (prev + 1) % partners.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, []);
+  }, [partners.length]);
 
   return (
     <div className="min-h-screen">
@@ -66,53 +66,56 @@ const Home = () => {
 
       <HomeComp />
       <HomeComp3
-        primaryColor="#fffb22ff"
+        primaryColor="#D4AF37" // Aligned with branding
         textColor="#f5f5f5"
-        lightBg="#212121ff"
+        lightBg="#212121"
         stats={[
           { number: "8+", label: "Cities" },
           { number: "11K+", label: "Participants" },
-          { number: "6+", label: "Years of Exprians" },
+          { number: "6+", label: "Years of Experience" }, // Fixed typo
           { number: "15+", label: "Successful Events" },
         ]}
         backgroundImage={backgroundImage}
       />
       <HomeComp4 />
-      <HomeComp7 />
+      <HomeComp6 />
       {/* Key Achievements Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 font-['Montserrat']">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-black mb-4 font-['Montserrat'] uppercase tracking-wider">
               Key Achievements
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               Our impact through art and community engagement
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {events.map((event) => (
               <div
                 key={event.id}
-                className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
               >
                 <div className="h-48 bg-gray-200 relative">
                   <img
                     src={event.image}
-                    alt={event.title}
+                    alt={`Image for ${event.title} event`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-black mb-2 font-['Montserrat']">
                     {event.title}
                   </h3>
                   <p className="text-[#D4AF37] text-sm font-medium mb-3">
                     {event.date}
                   </p>
-                  <p className="text-gray-600 mb-4">{event.description}</p>
-                  <button className="text-[#D4AF37] font-semibold hover:text-[#B8941F] transition-colors">
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {event.description}
+                  </p>
+                  <button className="text-[#D4AF37] font-semibold hover:text-[#B8941F] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
                     Learn More →
                   </button>
                 </div>
@@ -121,45 +124,46 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* Partners/Logo Carousel */}
-      <section className="py-20 bg-black">
+      {/* Partners Carousel */}
+      <section className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4 font-['Montserrat']">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 font-['Montserrat'] uppercase tracking-wider">
               Our Partners
             </h2>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-base">
               Trusted by leading organizations across Ethiopia
             </p>
           </div>
 
-          {/* Make it wrap & stay inside bounds */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 md:gap-16 max-w-full overflow-x-auto">
-            {partners.map((partner, index) => (
-              <div
-                key={partner}
-                className={`text-center transition-all duration-500 ${
-                  index === currentSlide
-                    ? "text-[#D4AF37] scale-110"
-                    : "text-gray-600 scale-90"
-                }`}
-              >
-                <div className="text-lg font-semibold font-['Montserrat'] whitespace-nowrap">
-                  {partner}
+          <div className="relative overflow-hidden">
+            <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-12">
+              {partners.map((partner, index) => (
+                <div
+                  key={partner}
+                  className={`text-center transition-all duration-500 ${
+                    index === currentSlide
+                      ? "text-[#D4AF37] scale-110"
+                      : "text-gray-600 scale-90"
+                  } min-w-[150px] sm:min-w-[200px]`}
+                >
+                  <div className="text-base sm:text-lg font-semibold font-['Montserrat'] whitespace-nowrap">
+                    {partner}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {/* Carousel Dots */}
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className="flex justify-center mt-6 space-x-2">
             {partners.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
+                className={`w-2 h-2 rounded-full transition-colors ${
                   index === currentSlide ? "bg-[#D4AF37]" : "bg-gray-600"
-                }`}
+                } focus:outline-none focus:ring-2 focus:ring-[#D4AF37]`}
+                aria-label={`Go to partner ${index + 1}`}
               />
             ))}
           </div>

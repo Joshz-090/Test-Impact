@@ -4,7 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -16,11 +17,23 @@ import Team from "./pages/Team";
 import Events from "./pages/Events";
 import Contact from "./pages/Contact";
 
+// Scroll-to-top component
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null; // Renders nothing
+}
+
 function App() {
   return (
     <Router basename="/">
       <div className="min-h-screen bg-white">
         <Navbar />
+        <ScrollToTop /> {/* Add scroll handler here */}
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -31,8 +44,6 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/events" element={<Events />} />
             <Route path="/contact" element={<Contact />} />
-
-            {/* Redirect any unknown route to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

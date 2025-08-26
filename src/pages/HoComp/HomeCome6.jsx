@@ -2,22 +2,21 @@ import React, { useState, useEffect } from "react";
 import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import ErrorBoundary from "../../components/ErrorBoundary";
-import img from "../../assets/images/content.jpg";
+import img from "../../assets/images/content.jpg"; // Replace with real images from PDF
 
 const HomeComp6 = () => {
-  const [visibleMembers, setVisibleMembers] = useState(4);
+  const [visibleMembers, setVisibleMembers] = useState(6);
   const [showAllMessage, setShowAllMessage] = useState(false);
   const [filter, setFilter] = useState("all");
   const [sortedMembers, setSortedMembers] = useState([]);
 
-  // Team data with image paths and social links
   const teamMembers = [
     {
       id: 1,
       name: "Sosina Eshetu",
       position: "CEO & Founder",
       description:
-        "Event Organizer and Artist with over 10 years of experience in creative direction and community engagement.",
+        "Event Organizer and Artist with over 10 years of experience in creative direction and community engagement (PDF Page 11).",
       image: img,
       social: {
         linkedin: "#",
@@ -25,14 +24,14 @@ const HomeComp6 = () => {
         email: "sosina@impact.com",
       },
       department: "executive",
-      isCEO: true,
+      isExecutive: true,
     },
     {
       id: 2,
       name: "Kalkidan Nega",
       position: "Managing Director",
       description:
-        "Architect and Digital Marketing specialist with expertise in combining design thinking with strategic marketing.",
+        "Architect and Digital Marketing specialist with expertise in combining design thinking with strategic marketing (PDF Page 11).",
       image: img,
       social: {
         linkedin: "#",
@@ -40,6 +39,7 @@ const HomeComp6 = () => {
         email: "kalkidan@impact.com",
       },
       department: "executive",
+      isExecutive: true,
     },
     {
       id: 3,
@@ -81,6 +81,7 @@ const HomeComp6 = () => {
         email: "daniel@impact.com",
       },
       department: "technology",
+      isPriority: true,
     },
     {
       id: 6,
@@ -95,6 +96,7 @@ const HomeComp6 = () => {
         email: "selamawit@impact.com",
       },
       department: "marketing",
+      isPriority: true,
     },
     {
       id: 7,
@@ -151,76 +153,80 @@ const HomeComp6 = () => {
       },
       department: "community",
     },
-    {
-      id: 11,
-      name: "Tewodros Kebede",
-      position: "Content Producer",
-      description:
-        "Writer and content strategist with a background in journalism.",
-      image: img,
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "tewodros@impact.com",
-      },
-      department: "content",
-    },
-    {
-      id: 12,
-      name: "Alemitu Fikre",
-      position: "Community Manager",
-      description:
-        "Engagement specialist focused on building creative communities.",
-      image: img,
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "alemitu@impact.com",
-      },
-      department: "community",
-    },
   ];
 
-  // Filter and sort members
   useEffect(() => {
     let filtered = [...teamMembers];
-
     if (filter !== "all") {
       filtered = filtered.filter((member) =>
-        filter === "executive" ? member.isCEO : member.department === filter
+        filter === "executive"
+          ? member.isExecutive
+          : member.department === filter
       );
     }
-
+    filtered.sort((a, b) => {
+      if (a.isExecutive && !b.isExecutive) return -1;
+      if (!a.isExecutive && b.isExecutive) return 1;
+      if (a.isPriority && !b.isPriority) return -1;
+      if (!a.isPriority && b.isPriority) return 1;
+      return 0;
+    });
     setSortedMembers(filtered);
-    setVisibleMembers(filtered.length > 4 ? 4 : filtered.length);
+    setVisibleMembers(6);
     setShowAllMessage(false);
   }, [filter]);
 
   const loadMoreMembers = () => {
     if (visibleMembers >= sortedMembers.length) {
       setShowAllMessage(true);
-      setTimeout(() => setShowAllMessage(false), 3000);
+      setTimeout(() => setShowAllMessage(false), 2000);
       return;
     }
-    setVisibleMembers((prev) => Math.min(prev + 3, sortedMembers.length));
+    setVisibleMembers((prev) => prev + 4);
   };
 
   const displayedMembers = sortedMembers.slice(0, visibleMembers);
-  const nonCEOMembers = displayedMembers.filter((member) => !member.isCEO);
-  const ceoMember = displayedMembers.find((member) => member.isCEO);
+  const executiveMembers = displayedMembers.filter(
+    (member) => member.isExecutive
+  );
+  const nonExecutiveMembers = displayedMembers.filter(
+    (member) => !member.isExecutive
+  );
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.3 } },
+  };
+
+  const buttonVariants = {
+    initial: { scale: 1, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)" },
+    hover: {
+      scale: 1.05,
+      boxShadow: "0px 6px 16px rgba(212, 175, 55, 0.4)",
+      background: [
+        "linear-gradient(45deg, #D4AF37, #F1C84C)",
+        "linear-gradient(45deg, #F1C84C, #D4AF37)",
+      ],
+      transition: {
+        scale: { duration: 0.3 },
+        boxShadow: { duration: 0.3 },
+        background: { duration: 1, repeat: Infinity, repeatType: "reverse" },
+      },
+    },
+    tap: { scale: 0.95 },
+  };
 
   return (
     <ErrorBoundary>
-      <div className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-3xl font-bold sm:text-4xl uppercase tracking-wider font-montserrat"
-              style={{ color: "#d4af37" }} // Gold color
+              className="text-2xl sm:text-3xl font-bold uppercase tracking-wider font-montserrat text-[#D4AF37]"
             >
               Our Team
             </motion.h2>
@@ -228,169 +234,123 @@ const HomeComp6 = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto"
+              className="mt-3 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto"
             >
-              Meet the creative minds behind Impact Production who bring
-              passion, expertise, and innovation to every project.
+              Meet the creative minds behind Impact Production who drive
+              passion, expertise, and innovation.
             </motion.p>
           </div>
 
-          {/* Filter Controls */}
-          <div className="flex justify-center mb-12">
-            <div className="inline-flex rounded-md shadow-sm flex-wrap justify-center">
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {[
+              "all",
+              "executive",
+              "design",
+              "creative",
+              "technology",
+              "marketing",
+              "operations",
+              "content",
+              "community",
+            ].map((dept) => (
               <button
-                onClick={() => setFilter("all")}
-                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                  filter === "all"
-                    ? "bg-yellow-500 text-white"
+                key={dept}
+                onClick={() => setFilter(dept)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md ${
+                  filter === dept
+                    ? "bg-[#D4AF37] text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                } transition-colors focus:outline-none focus:ring-2 focus:ring-[#F1C84C]`}
+                aria-label={`Filter by ${dept} department`}
               >
-                All Team
+                {dept.charAt(0).toUpperCase() + dept.slice(1)}
               </button>
-              <button
-                onClick={() => setFilter("executive")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "executive"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Leadership
-              </button>
-              <button
-                onClick={() => setFilter("design")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "design"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Design
-              </button>
-              <button
-                onClick={() => setFilter("creative")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "creative"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Creative
-              </button>
-              <button
-                onClick={() => setFilter("technology")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "technology"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Technology
-              </button>
-              <button
-                onClick={() => setFilter("marketing")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "marketing"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Marketing
-              </button>
-              <button
-                onClick={() => setFilter("operations")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "operations"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Operations
-              </button>
-              <button
-                onClick={() => setFilter("content")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  filter === "content"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Content
-              </button>
-              <button
-                onClick={() => setFilter("community")}
-                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                  filter === "community"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Community
-              </button>
-            </div>
+            ))}
           </div>
 
-          {/* CEO Card */}
           <AnimatePresence>
-            {ceoMember && (
+            {executiveMembers.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="col-span-full flex justify-center mb-16"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"
               >
-                <div className="bg-gradient-to-r from-yellow-50 to-gray-50 rounded-xl shadow-2xl overflow-hidden w-full max-w-4xl transform transition-all hover:shadow-lg border-2 border-yellow-200">
-                  <div className="md:flex">
-                    <div className="md:w-1/3 p-6 flex justify-center">
-                      <div className="relative h-64 w-64 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                        <img
-                          src={ceoMember.image}
-                          alt={ceoMember.name}
-                          className="h-full w-full object-cover"
-                          onError={(e) => {
-                            e.target.src = "/team/placeholder.jpg";
-                          }}
-                        />
+                {executiveMembers.map((member) => (
+                  <motion.div
+                    key={member.id}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="bg-white rounded-xl shadow-lg border border-[#D4AF37]/30 overflow-hidden hover:shadow-xl transition-all"
+                    role="article"
+                    aria-labelledby={`executive-${member.id}`}
+                  >
+                    <div className="md:flex">
+                      <div className="md:w-1/3 p-4 flex justify-center">
+                        <div className="relative h-44 w-44 rounded-full overflow-hidden border-3 border-[#D4AF37]/20 shadow-md">
+                          <img
+                            src={member.image}
+                            alt={member.name}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                            onError={(e) =>
+                              (e.target.src = "/team/placeholder.jpg")
+                            }
+                          />
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="md:w-2/3 p-8 flex flex-col justify-center">
-                      <div>
-                        <span className="inline-block px-3 py-1 bg-yellow-500 text-white text-xs font-semibold tracking-wider rounded-full mb-4">
+                      <div className="md:w-2/3 p-5 flex flex-col justify-center">
+                        <span className="inline-block px-2 py-1 bg-[#D4AF37] text-white text-xs font-semibold rounded-full mb-2">
                           LEADERSHIP
                         </span>
-                        <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                          {ceoMember.name}
+                        <h3
+                          className="text-xl font-bold text-gray-900 mb-2 font-montserrat"
+                          id={`executive-${member.id}`}
+                        >
+                          {member.name}
                         </h3>
-                        <p className="text-yellow-600 text-xl font-semibold mb-6">
-                          {ceoMember.position}
+                        <p className="text-[#D4AF37] text-base font-semibold mb-3">
+                          {member.position}
                         </p>
-                        <p className="text-gray-600 mb-6">
-                          {ceoMember.description}
+                        <p className="text-gray-600 text-sm mb-4">
+                          {member.description}
                         </p>
-                        <div className="flex space-x-4">
-                          {ceoMember.social.linkedin && (
+                        <div className="flex space-x-3">
+                          {member.social.linkedin && (
                             <a
-                              href={ceoMember.social.linkedin}
-                              className="text-gray-500 hover:text-yellow-500"
+                              href={member.social.linkedin}
+                              className="text-gray-500 hover:text-[#D4AF37]"
+                              aria-label={`LinkedIn profile of ${member.name}`}
                             >
                               <FaLinkedin className="w-5 h-5" />
                             </a>
                           )}
-                          {ceoMember.social.twitter && (
+                          {member.social.twitter && (
                             <a
-                              href={ceoMember.social.twitter}
-                              className="text-gray-500 hover:text-yellow-500"
+                              href={member.social.twitter}
+                              className="text-gray-500 hover:text-[#D4AF37]"
+                              aria-label={`Twitter profile of ${member.name}`}
                             >
                               <FaTwitter className="w-5 h-5" />
                             </a>
                           )}
-                          {ceoMember.social.email && (
+                          {member.social.instagram && (
                             <a
-                              href={`mailto:${ceoMember.social.email}`}
-                              className="text-gray-500 hover:text-yellow-500"
+                              href={member.social.instagram}
+                              className="text-gray-500 hover:text-[#D4AF37]"
+                              aria-label={`Instagram profile of ${member.name}`}
+                            >
+                              <FaInstagram className="w-5 h-5" />
+                            </a>
+                          )}
+                          {member.social.email && (
+                            <a
+                              href={`mailto:${member.social.email}`}
+                              className="text-gray-500 hover:text-[#D4AF37]"
+                              aria-label={`Email ${member.name}`}
                             >
                               <FaEnvelope className="w-5 h-5" />
                             </a>
@@ -398,116 +358,149 @@ const HomeComp6 = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Team Members Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
-              {nonCEOMembers.map((member) => (
-                <motion.div
-                  key={member.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  layout
-                >
-                  <div className="bg-white rounded-xl shadow-lg overflow-hidden h-full transform transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col">
-                    <div className="relative pt-8 px-8 flex justify-center">
-                      <div className="relative h-40 w-40 rounded-full overflow-hidden border-4 border-white shadow-md">
+          <AnimatePresence>
+            {nonExecutiveMembers.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+              >
+                {nonExecutiveMembers.map((member) => (
+                  <motion.div
+                    key={member.id}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all"
+                    role="article"
+                    aria-labelledby={`member-${member.id}`}
+                  >
+                    <div className="pt-5 px-5 flex justify-center">
+                      <div className="relative h-28 w-28 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm">
                         <img
                           src={member.image}
                           alt={member.name}
                           className="h-full w-full object-cover"
-                          onError={(e) => {
-                            e.target.src = "/team/placeholder.jpg";
-                          }}
+                          loading="lazy"
+                          onError={(e) =>
+                            (e.target.src = "/team/placeholder.jpg")
+                          }
                         />
                       </div>
                     </div>
-                    <div className="p-6 flex-grow flex flex-col">
-                      <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                    <div className="p-4 text-center">
+                      <h3
+                        className="text-lg font-bold text-gray-900 mb-1 font-montserrat"
+                        id={`member-${member.id}`}
+                      >
                         {member.name}
                       </h3>
-                      <p className="text-yellow-600 font-semibold text-center mb-4">
+                      <p className="text-[#D4AF37] text-sm font-semibold mb-2">
                         {member.position}
                       </p>
-                      <p className="text-gray-600 text-center mb-6 flex-grow">
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-3">
                         {member.description}
                       </p>
-                      <div className="flex justify-center space-x-4">
-                        {member.social && member.social.linkedin && (
+                      <div className="flex justify-center space-x-2">
+                        {member.social.linkedin && (
                           <a
                             href={member.social.linkedin}
-                            className="text-gray-400 hover:text-yellow-500 transition-colors"
+                            className="text-gray-400 hover:text-[#D4AF37]"
+                            aria-label={`LinkedIn profile of ${member.name}`}
                           >
-                            <FaLinkedin className="w-5 h-5" />
+                            <FaLinkedin className="w-4 h-4" />
                           </a>
                         )}
-                        {member.social && member.social.twitter && (
+                        {member.social.twitter && (
                           <a
                             href={member.social.twitter}
-                            className="text-gray-400 hover:text-yellow-500 transition-colors"
+                            className="text-gray-400 hover:text-[#D4AF37]"
+                            aria-label={`Twitter profile of ${member.name}`}
                           >
-                            <FaTwitter className="w-5 h-5" />
+                            <FaTwitter className="w-4 h-4" />
                           </a>
                         )}
-                        {member.social && member.social.instagram && (
+                        {member.social.instagram && (
                           <a
                             href={member.social.instagram}
-                            className="text-gray-400 hover:text-yellow-500 transition-colors"
+                            className="text-gray-400 hover:text-[#D4AF37]"
+                            aria-label={`Instagram profile of ${member.name}`}
                           >
-                            <FaInstagram className="w-5 h-5" />
+                            <FaInstagram className="w-4 h-4" />
                           </a>
                         )}
-                        {member.social && member.social.email && (
+                        {member.social.email && (
                           <a
                             href={`mailto:${member.social.email}`}
-                            className="text-gray-400 hover:text-yellow-500 transition-colors"
+                            className="text-gray-400 hover:text-[#D4AF37]"
+                            aria-label={`Email ${member.name}`}
                           >
-                            <FaEnvelope className="w-5 h-5" />
+                            <FaEnvelope className="w-4 h-4" />
+                          </a>
+                        )}
+                        {member.social.behance && (
+                          <a
+                            href={member.social.behance}
+                            className="text-gray-400 hover:text-[#D4AF37]"
+                            aria-label={`Behance profile of ${member.name}`}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.507.109 1.188.109 1.757h-5.147c.001 1.885.791 3.12 2.766 3.12 1.203 0 2.151-.541 2.658-1.508h2.438zm-2.827-3.622c-.374-1.185-1.282-2.098-2.775-2.098-1.711 0-2.618 1.093-2.618 2.719 0 1.695.951 2.601 2.633 2.601 1.432 0 2.53-1.074 2.76-2.222h-2.76zm-9.693-1.378h-3.606v-2h3.606v2zm0 3.378h-3.606v-2h3.606v2zm0 3.378h-3.606v-2h3.606v2zm-6.606-8.756c-2.297 0-4.394 1.831-4.394 5.756 0 3.926 2.297 5.756 4.394 5.756 2.096 0 4.394-1.83 4.394-5.756 0-3.925-2.098-5.756-4.394-5.756zm0 9.512c-1.695 0-2.971-1.411-2.971-3.756 0-2.347 1.276-3.756 2.971-3.756 1.694 0 2.971 1.409 2.971 3.756 0 2.345-1.277 3.756-2.971 3.756z" />
+                            </svg>
                           </a>
                         )}
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {/* Load More Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-8">
             {visibleMembers < sortedMembers.length ? (
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                variants={buttonVariants}
+                initial="initial"
+                whileHover="hover"
+                whileTap="tap"
                 onClick={loadMoreMembers}
-                className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg shadow-md transition-all duration-300"
+                className="px-5 py-2 bg-[#D4AF37] text-white font-semibold rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F1C84C]"
+                aria-label="Load more team members"
               >
                 Load More Team Members
               </motion.button>
             ) : (
-              sortedMembers.length > 4 && (
+              sortedMembers.length > 6 && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: showAllMessage ? 1 : 0 }}
-                  className="text-gray-500 italic"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: showAllMessage ? 1 : 0,
+                    y: showAllMessage ? 0 : 10,
+                  }}
+                  className="text-gray-600 text-sm italic"
+                  role="alert"
                 >
-                  No more team members to display.
+                  All team members displayed.
                 </motion.div>
               )
             )}
           </div>
         </div>
-        <div className="line-section">
-          <div className="gradient-divider"></div>{" "}
-        </div>
-      </div>
+      </section>
     </ErrorBoundary>
   );
 };

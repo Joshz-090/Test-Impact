@@ -1,124 +1,316 @@
-import { useState } from 'react'
+import React, { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import * as THREE from "three";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Portfolio = () => {
-  const [activeFilter, setActiveFilter] = useState('all')
-  const [selectedProject, setSelectedProject] = useState(null)
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [selectedProject, setSelectedProject] = useState(null);
+  const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    let scene, camera, renderer, particles;
+
+    const initThreeJS = () => {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 5;
+
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvasRef.current,
+        alpha: true,
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // Create particle system
+      const particlesGeometry = new THREE.BufferGeometry();
+      const count = 1000;
+      const positions = new Float32Array(count * 3);
+
+      for (let i = 0; i < count * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 10;
+      }
+
+      particlesGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3)
+      );
+      const particlesMaterial = new THREE.PointsMaterial({
+        color: 0xd4af37,
+        size: 0.02,
+        transparent: true,
+        opacity: 0.8,
+      });
+
+      particles = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particles);
+
+      // Animation loop
+      const animate = () => {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.002;
+        renderer.render(scene, camera);
+      };
+      animate();
+
+      // Handle resize
+      const handleResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      };
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    };
+
+    // GSAP animations
+    const ctx = gsap.context(() => {
+      initThreeJS();
+
+      // Hero animation with 3D effect
+      gsap.from(".hero-title", {
+        duration: 1.5,
+        y: 100,
+        opacity: 0,
+        rotationX: 45,
+        ease: "power3.out",
+        stagger: 0.2,
+      });
+
+      // Section reveal with 3D rotation
+      gsap.utils.toArray(".section-reveal").forEach((section) => {
+        gsap.from(section, {
+          y: 100,
+          opacity: 0,
+          rotationY: 30,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      });
+
+      // Timeline with 3D flip effect
+      gsap.utils.toArray(".timeline-item").forEach((item, i) => {
+        gsap.from(item, {
+          x: i % 2 === 0 ? -150 : 150,
+          opacity: 0,
+          rotationY: 90,
+          duration: 1,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: item,
+            start: "top 75%",
+          },
+        });
+      });
+
+      // Value cards with 3D hover
+      gsap.utils.toArray(".value-card").forEach((card, i) => {
+        gsap.from(card, {
+          y: 10,
+          opacity: 0.3,
+          rotationX: 10,
+          duration: 0.8,
+          delay: i * 0.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+
+        // 3D tilt effect on hover
+        card.addEventListener("mouseenter", () => {
+          gsap.to(card, {
+            rotationY: 10,
+            rotationX: 10,
+            scale: 1.05,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
+        card.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            rotationY: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
+      });
+
+      // Partner logos with 3D effect
+      gsap.from(".partner-logo", {
+        y: 50,
+        opacity: 0,
+        rotationX: 45,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".partners-section",
+          start: "top 80%",
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const filters = [
-    { id: 'all', label: 'All Projects' },
-    { id: 'graphic', label: 'Graphic Design' },
-    { id: 'events', label: 'Events' },
-    { id: 'architecture', label: 'Architecture' },
-    { id: 'web', label: 'Web Development' }
-  ]
+    { id: "all", label: "All Projects" },
+    { id: "graphic", label: "Graphic Design" },
+    { id: "events", label: "Events" },
+    { id: "architecture", label: "Architecture" },
+    { id: "web", label: "Web Development" },
+  ];
 
   const projects = [
     {
       id: 1,
-      title: 'Modern Art Gallery Branding',
-      category: 'graphic',
-      description: 'Complete brand identity design for a contemporary art gallery, including logo, signage, and marketing materials.',
-      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
-      client: 'Contemporary Art Gallery',
-      year: '2024',
-      technologies: ['Adobe Creative Suite', 'Brand Strategy', 'Print Design']
+      title: "Modern Art Gallery Branding",
+      category: "graphic",
+      description:
+        "Complete brand identity design for a contemporary art gallery, including logo, signage, and marketing materials.",
+      image:
+        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+      client: "Contemporary Art Gallery",
+      year: "2024",
+      technologies: ["Adobe Creative Suite", "Brand Strategy", "Print Design"],
     },
     {
       id: 2,
-      title: 'Tech Conference Event Design',
-      category: 'events',
-      description: 'Comprehensive event branding and design for a major technology conference with 500+ attendees.',
-      image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop',
-      client: 'Tech Innovation Summit',
-      year: '2024',
-      technologies: ['Event Planning', 'Digital Design', '3D Visualization']
+      title: "Tech Conference Event Design",
+      category: "events",
+      description:
+        "Comprehensive event branding and design for a major technology conference with 500+ attendees.",
+      image:
+        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
+      client: "Tech Innovation Summit",
+      year: "2024",
+      technologies: ["Event Planning", "Digital Design", "3D Visualization"],
     },
     {
       id: 3,
-      title: 'Luxury Hotel Interior Design',
-      category: 'architecture',
-      description: 'Complete interior design and renovation project for a boutique luxury hotel in the city center.',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-      client: 'Boutique Hotel Group',
-      year: '2023',
-      technologies: ['Interior Design', '3D Modeling', 'Project Management']
+      title: "Luxury Hotel Interior Design",
+      category: "architecture",
+      description:
+        "Complete interior design and renovation project for a boutique luxury hotel in the city center.",
+      image:
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      client: "Boutique Hotel Group",
+      year: "2023",
+      technologies: ["Interior Design", "3D Modeling", "Project Management"],
     },
     {
       id: 4,
-      title: 'E-commerce Website Development',
-      category: 'web',
-      description: 'Modern, responsive e-commerce platform with advanced features and seamless user experience.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-      client: 'Fashion Retailer',
-      year: '2023',
-      technologies: ['React', 'Node.js', 'E-commerce', 'UI/UX Design']
+      title: "E-commerce Website Development",
+      category: "web",
+      description:
+        "Modern, responsive e-commerce platform with advanced features and seamless user experience.",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      client: "Fashion Retailer",
+      year: "2023",
+      technologies: ["React", "Node.js", "E-commerce", "UI/UX Design"],
     },
     {
       id: 5,
-      title: 'Corporate Identity Package',
-      category: 'graphic',
-      description: 'Complete corporate identity design including logo, business cards, letterheads, and brand guidelines.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-      client: 'Financial Services Corp',
-      year: '2023',
-      technologies: ['Brand Identity', 'Print Design', 'Brand Guidelines']
+      title: "Corporate Identity Package",
+      category: "graphic",
+      description:
+        "Complete corporate identity design including logo, business cards, letterheads, and brand guidelines.",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+      client: "Financial Services Corp",
+      year: "2023",
+      technologies: ["Brand Identity", "Print Design", "Brand Guidelines"],
     },
     {
       id: 6,
-      title: 'Art Exhibition Installation',
-      category: 'events',
-      description: 'Large-scale art installation and exhibition design for a contemporary art museum.',
-      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop',
-      client: 'Modern Art Museum',
-      year: '2023',
-      technologies: ['Installation Art', 'Spatial Design', 'Lighting Design']
+      title: "Art Exhibition Installation",
+      category: "events",
+      description:
+        "Large-scale art installation and exhibition design for a contemporary art museum.",
+      image:
+        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+      client: "Modern Art Museum",
+      year: "2023",
+      technologies: ["Installation Art", "Spatial Design", "Lighting Design"],
     },
     {
       id: 7,
-      title: 'Residential Complex Design',
-      category: 'architecture',
-      description: 'Modern residential complex design with sustainable features and community spaces.',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-      client: 'Urban Development Co',
-      year: '2023',
-      technologies: ['Architecture', 'Sustainable Design', '3D Visualization']
+      title: "Residential Complex Design",
+      category: "architecture",
+      description:
+        "Modern residential complex design with sustainable features and community spaces.",
+      image:
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      client: "Urban Development Co",
+      year: "2023",
+      technologies: ["Architecture", "Sustainable Design", "3D Visualization"],
     },
     {
       id: 8,
-      title: 'Mobile App Development',
-      category: 'web',
-      description: 'Cross-platform mobile application for food delivery with advanced features and intuitive design.',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-      client: 'FoodTech Startup',
-      year: '2023',
-      technologies: ['React Native', 'Mobile Development', 'UI/UX Design']
+      title: "Mobile App Development",
+      category: "web",
+      description:
+        "Cross-platform mobile application for food delivery with advanced features and intuitive design.",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      client: "FoodTech Startup",
+      year: "2023",
+      technologies: ["React Native", "Mobile Development", "UI/UX Design"],
     },
     {
       id: 9,
-      title: 'Marketing Campaign Design',
-      category: 'graphic',
-      description: 'Comprehensive marketing campaign design including digital ads, social media graphics, and print materials.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-      client: 'Consumer Goods Brand',
-      year: '2023',
-      technologies: ['Digital Design', 'Marketing Strategy', 'Social Media']
-    }
-  ]
+      title: "Marketing Campaign Design",
+      category: "graphic",
+      description:
+        "Comprehensive marketing campaign design including digital ads, social media graphics, and print materials.",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+      client: "Consumer Goods Brand",
+      year: "2023",
+      technologies: ["Digital Design", "Marketing Strategy", "Social Media"],
+    },
+  ];
 
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === activeFilter)
+  const filteredProjects =
+    activeFilter === "all"
+      ? projects
+      : projects.filter((project) => project.category === activeFilter);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#dddddd] text-white font-sans"
+      ref={containerRef}
+    >
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-6xl font-bold mb-6 font-['Montserrat']">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <canvas ref={canvasRef} className="absolute inset-0" />
+        <div className="relative z-10 text-center px-4 backdrop-blur-sm bg-black/30 rounded-2xl py-12">
+          <h1 className="hero-title text-4xl md:text-7xl font-bold mb-6 font-montserrat">
             Our <span className="text-[#D4AF37]">Portfolio</span>
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-300 max-w-4xl mx-auto">
-            Showcasing our creative excellence across diverse projects and industries
+          <p className="hero-title text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto">
+            Showcasing our creative excellence across diverse projects and
+            industries
           </p>
         </div>
       </section>
@@ -133,8 +325,8 @@ const Portfolio = () => {
                 onClick={() => setActiveFilter(filter.id)}
                 className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
                   activeFilter === filter.id
-                    ? 'bg-[#D4AF37] text-black'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? "bg-[#D4AF37] text-black"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {filter.label}
@@ -149,14 +341,14 @@ const Portfolio = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project) => (
-              <div 
-                key={project.id} 
+              <div
+                key={project.id}
                 className="group bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
                 onClick={() => setSelectedProject(project)}
               >
                 <div className="relative h-64 bg-gray-200 overflow-hidden">
-                  <img 
-                    src={project.image} 
+                  <img
+                    src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
@@ -171,11 +363,17 @@ const Portfolio = () => {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">{project.title}</h3>
+                  <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">
+                    {project.title}
+                  </h3>
                   <p className="text-gray-600 mb-3">{project.description}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#D4AF37] font-medium">{project.client}</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">{project.category}</span>
+                    <span className="text-sm text-[#D4AF37] font-medium">
+                      {project.client}
+                    </span>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">
+                      {project.category}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -196,42 +394,62 @@ const Portfolio = () => {
                 ×
               </button>
               <div className="h-64 bg-gray-200">
-                <img 
-                  src={selectedProject.image} 
+                <img
+                  src={selectedProject.image}
                   alt={selectedProject.title}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-8">
-                <h2 className="text-3xl font-bold text-black mb-4 font-['Montserrat']">{selectedProject.title}</h2>
-                <p className="text-gray-700 mb-6 text-lg">{selectedProject.description}</p>
-                
+                <h2 className="text-3xl font-bold text-black mb-4 font-['Montserrat']">
+                  {selectedProject.title}
+                </h2>
+                <p className="text-gray-700 mb-6 text-lg">
+                  {selectedProject.description}
+                </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-black mb-2">Project Details</h3>
+                    <h3 className="text-lg font-semibold text-black mb-2">
+                      Project Details
+                    </h3>
                     <div className="space-y-2 text-gray-700">
-                      <div><span className="font-medium">Client:</span> {selectedProject.client}</div>
-                      <div><span className="font-medium">Year:</span> {selectedProject.year}</div>
-                      <div><span className="font-medium">Category:</span> {selectedProject.category}</div>
+                      <div>
+                        <span className="font-medium">Client:</span>{" "}
+                        {selectedProject.client}
+                      </div>
+                      <div>
+                        <span className="font-medium">Year:</span>{" "}
+                        {selectedProject.year}
+                      </div>
+                      <div>
+                        <span className="font-medium">Category:</span>{" "}
+                        {selectedProject.category}
+                      </div>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-black mb-2">Technologies Used</h3>
+                    <h3 className="text-lg font-semibold text-black mb-2">
+                      Technologies Used
+                    </h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedProject.technologies.map((tech, index) => (
-                        <span key={index} className="bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm">
+                        <span
+                          key={index}
+                          className="bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm"
+                        >
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-4">
                   <button className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors">
                     View Full Case Study
                   </button>
-                  <button 
+                  <button
                     onClick={() => setSelectedProject(null)}
                     className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
                   >
@@ -297,7 +515,7 @@ const Portfolio = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default Portfolio 
+export default Portfolio;
