@@ -23,7 +23,7 @@ const HomeComp6 = () => {
       name: "Sosina Eshetu",
       position: "CEO & Founder",
       description:
-        "Event Organizer and Artist with over 10 years of experience in creative direction and community engagement (PDF Page 11).",
+        "Event Organizer and Artist with over 10 years of experience in creative direction and community engagement.",
       image: sosina,
       social: {
         linkedin: "#",
@@ -38,7 +38,7 @@ const HomeComp6 = () => {
       name: "Kalkidan Nega",
       position: "Managing Director",
       description:
-        "Architect and Digital Marketing specialist with expertise in combining design thinking with strategic marketing (PDF Page 11).",
+        "Architect and Digital Marketing specialist with expertise in combining design thinking with strategic marketing.",
       image: kalkidan,
       social: {
         linkedin: "#",
