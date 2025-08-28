@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/img/logo.png';
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/images/logos/1_final-removebg-preview.png";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,14 +11,14 @@ const Navbar = () => {
   const currentPath = location.pathname;
 
   const navItems = [
-    { id: 'home', label: 'Home', path: '/' },
-    { id: 'about', label: 'About', path: '/about' },
-    { id: 'services', label: 'Services', path: '/services' },
-    { id: 'departments', label: 'Departments', path: '/departments' },
-    { id: 'portfolio', label: 'Portfolio', path: '/portfolio' },
-    { id: 'team', label: 'Team', path: '/team' },
-    { id: 'events', label: 'Events', path: '/events' },
-    { id: 'contact', label: 'Contact', path: '/contact' },
+    { id: "home", label: "Home", path: "/" },
+    { id: "about", label: "About", path: "/about" },
+    { id: "services", label: "Services", path: "/services" },
+    { id: "departments", label: "Departments", path: "/departments" },
+    { id: "portfolio", label: "Portfolio", path: "/portfolio" },
+    { id: "team", label: "Team", path: "/team" },
+    { id: "events", label: "Events", path: "/events" },
+    { id: "contact", label: "Contact", path: "/contact" },
   ];
 
   useEffect(() => {
@@ -27,14 +27,14 @@ const Navbar = () => {
       setIsScrolled(scrollPosition > window.innerHeight * 0.9);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-black shadow-lg' : 'bg-transparent'
+        isScrolled ? "bg-black shadow-lg" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,16 +44,16 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Impact Production Logo"
-              className="h-14 w-10 navbar-logo"
+              className="h-14 w-8 navbar-logo"
               onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'block';
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "block";
               }}
             />
             {/* Fallback text logo */}
             <h1
               className="text-2xl font-bold text-[#D4AF37] font-['Montserrat'] navbar-logo"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             >
               Impact Production
             </h1>
@@ -68,8 +68,8 @@ const Navbar = () => {
                   to={item.path}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 font-['Montserrat'] ${
                     currentPath === item.path
-                      ? 'text-[#D4AF37] border-b-2 border-[#D4AF37]'
-                      : 'text-white hover:text-[#D4AF37] hover:scale-105'
+                      ? "text-[#D4AF37] border-b-2 border-[#D4AF37]"
+                      : "text-white hover:text-[#D4AF37] hover:scale-105"
                   }`}
                   onClick={() => setIsMenuOpen(false)} // close mobile menu if open
                 >
@@ -92,7 +92,12 @@ const Navbar = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
@@ -110,8 +115,8 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors font-['Montserrat'] ${
                   currentPath === item.path
-                    ? 'text-[#D4AF37] bg-black'
-                    : 'text-white hover:text-[#D4AF37]'
+                    ? "text-[#D4AF37] bg-black"
+                    : "text-white hover:text-[#D4AF37]"
                 }`}
               >
                 {item.label}

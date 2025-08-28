@@ -1,56 +1,56 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./HomeComp4.css";
 
-// Import your service images
-import eventImg from "../../assets/images/event.jpg";
-import designImg from "../../assets/images/content.jpg";
-import webImg from "../../assets/images/event.jpg";
-import brandImg from "../../assets/images/content.jpg";
-import contentImg from "../../assets/images/event.jpg";
-import socialImg from "../../assets/images/content.jpg";
+import eventImg from "../../assets/images/R/event.jpg";
+import graphicImg from "../../assets/images/R/graphoc.jpg";
+import artImg from "../../assets/images/R/art.jpg";
+import arcImg from "../../assets/images/R/arc.jpg";
+import webImg from "../../assets/images/R/web.jpg";
+import brandImg from "../../assets/images/R/brand.jpg";
 
+// Service data with fallback images
 const services = [
   {
     title: "EVENT ORGANIZING & EXHIBITIONS",
     description:
-      "From concept to execution, we create memorable events and exhibitions that showcase creativity and foster community engagement.",
+      "Creating unique event concepts for exhibitions and art showcases, collaborating with young artists.",
     link: "LEARN MORE →",
-    image: eventImg,
+    image: eventImg, // Replace with actual import: import eventImg from "../../assets/images/R/event.jpg"
   },
   {
     title: "GRAPHIC DESIGN & DIGITAL MARKETING",
     description:
-      "We create compelling visual identities and implement strategic digital marketing campaigns that help brands stand out.",
+      "Designing promotional materials and posters, with online, influencer, and direct marketing.",
     link: "LEARN MORE →",
-    image: designImg,
+    image: graphicImg, // Replace with actual import
   },
   {
-    title: "WEB & APP DEVELOPMENT",
+    title: "ART WORKS & CONTENT CREATION",
     description:
-      "We build responsive websites and intuitive applications that deliver exceptional user experiences and drive business growth.",
+      "Producing artist profiles, event descriptions, and hyper-realistic art with custom graphite drawings.",
     link: "LEARN MORE →",
-    image: webImg,
+    image: artImg, // Replace with actual import
   },
   {
-    title: "BRAND STRATEGY",
+    title: "ARCHITECTURAL & INTERIOR DESIGN",
     description:
-      "We develop comprehensive brand strategies that align with your business goals and resonate with your target audience.",
+      "Optimizing exhibition spaces with architectural design, feasibility studies, and interior design.",
     link: "LEARN MORE →",
-    image: brandImg,
+    image: arcImg, // Replace with actual import
   },
   {
-    title: "CONTENT CREATION",
+    title: "WEBSITE DESIGN & DEVELOPMENT",
     description:
-      "Our team produces engaging content that tells your story and connects with your customers on multiple platforms.",
+      "Building websites with front-end/back-end development, UI design, and testing.",
     link: "LEARN MORE →",
-    image: contentImg,
+    image: webImg, // Replace with actual import
   },
   {
-    title: "SOCIAL MEDIA MANAGEMENT",
+    title: "BRAND STRATEGY & SOCIAL MEDIA",
     description:
-      "We manage and optimize your social media presence to increase engagement and grow your online community.",
+      "Developing brand strategies and managing social media for art events and exhibitions.",
     link: "LEARN MORE →",
-    image: socialImg,
+    image: brandImg, // Replace with actual import
   },
 ];
 
@@ -119,7 +119,9 @@ const HomeComp4 = () => {
 
   return (
     <div className="services-container">
-      <h2 className="services-title">OUR SERVICES</h2>
+      <h2 className="services-title">
+        OUR <span>SERVICES</span>
+      </h2>
       <p className="services-subtitle">
         We offer a comprehensive range of creative services to help
         organizations and individuals make a meaningful impact.

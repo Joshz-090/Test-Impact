@@ -18,10 +18,13 @@
 .services-title {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #d4af37;
+  color: #111;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 3px;
+}
+.services-title span {
+  color: #d4af37;
 }
 
 .services-subtitle {
@@ -51,7 +54,7 @@
   align-items: center;
   position: relative;
   height: 600px;
-  perspective: 1000px;
+  /* perspective: 1000px; */
   width: 80%;
   max-width: 100%;
   /* Only show one card at a time on mobile */
@@ -100,7 +103,7 @@
 
 .service-card {
   position: absolute;
-  width: 350px;
+  width: 370px;
   height: 500px;
   background: white;
   border-radius: 10px;
@@ -113,7 +116,7 @@
 }
 
 .card-image-container {
-  height: 50%;
+  height: 55%;
   width: 100%;
   overflow: hidden;
 }
@@ -130,7 +133,7 @@
 }
 
 .card-text-container {
-  height: 50%;
+  height: 45%;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -176,25 +179,22 @@
 
 /* Card Positions */
 .service-card.left {
-  transform: translateX(-80%) scale(0.9);
+  transform: translateX(-70%) scale(0.9);
   opacity: 0.8;
   z-index: 1;
-  height: 450px;
 }
 
 .service-card.center {
-  transform: translateX(0) scale(1.1);
+  transform: translateX(0) scale(1.05);
   z-index: 3;
   opacity: 1;
   border: 2px solid #d4af37;
-  height: 500px;
 }
 
 .service-card.right {
-  transform: translateX(80%) scale(0.9);
+  transform: translateX(70%) scale(0.9);
   opacity: 0.8;
   z-index: 1;
-  height: 450px;
 }
 
 .service-card.overflow-right {

@@ -1,24 +1,13 @@
-import { useState, useEffect } from "react";
-import HeroSection from "../components/HeroSection";
+import HeroSection from "./HoComp/HeroSection";
 import Transition from "../components/Transition";
+import PartnersCarousel from "../components/PartnersCarousel";
 import HomeComp from "./HoComp/HomeComp";
 import HomeComp3 from "./HoComp/HomeComp3";
 import HomeComp4 from "./HoComp/HomeComp4";
-import HomeComp6 from "./HoComp/HomeCome6"; // Fixed import
-import backgroundImage from "../assets/images/Screenshot.png";
+import HomeComp6 from "./HoComp/HomeComp6";
+import backgroundImage from "../assets/images/R/Screenshot.png";
 
 const Home = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const partners = [
-    "CoSAP",
-    "Bethel Autism Center",
-    "Marconal Institute of Music & Painting",
-    "Visual Arts Club",
-    "Hebar Art Gallery",
-    "Community Organizations",
-  ];
-
   const events = [
     {
       id: 1,
@@ -49,19 +38,11 @@ const Home = () => {
     },
   ];
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % partners.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [partners.length]);
-
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <HeroSection />
       <div className="h-10 bg-gradient-to-b from-black/95 to-black"></div>
-
       <Transition />
 
       <HomeComp />
@@ -124,51 +105,8 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* Partners Carousel */}
-      <section className="py-16 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 font-['Montserrat'] uppercase tracking-wider">
-              Our Partners
-            </h2>
-            <p className="text-gray-400 text-base">
-              Trusted by leading organizations across Ethiopia
-            </p>
-          </div>
 
-          <div className="relative overflow-hidden">
-            <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-12">
-              {partners.map((partner, index) => (
-                <div
-                  key={partner}
-                  className={`text-center transition-all duration-500 ${
-                    index === currentSlide
-                      ? "text-[#D4AF37] scale-110"
-                      : "text-gray-600 scale-90"
-                  } min-w-[150px] sm:min-w-[200px]`}
-                >
-                  <div className="text-base sm:text-lg font-semibold font-['Montserrat'] whitespace-nowrap">
-                    {partner}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-6 space-x-2">
-            {partners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentSlide ? "bg-[#D4AF37]" : "bg-gray-600"
-                } focus:outline-none focus:ring-2 focus:ring-[#D4AF37]`}
-                aria-label={`Go to partner ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <PartnersCarousel />
     </div>
   );
 };

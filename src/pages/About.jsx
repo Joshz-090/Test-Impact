@@ -10,12 +10,11 @@ import {
   FaGlobeAfrica,
   FaLeaf,
 } from "react-icons/fa";
-import cosap from "../assets/images/1.png";
-import bethel from "../assets/images/1.png";
-import marconal from "../assets/images/1.png";
-import visualart from "../assets/images/1.png";
 
-// Register GSAP plugins
+import cosap from "../assets/images/logos/1 final.jpg";
+import videos from "../assets/video/logo video.mp4";
+import PartnersCarousel from "../components/PartnersCarousel";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
@@ -332,7 +331,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* NEW: Company Section */}
+      {/*  Company Section */}
       <section className="company-section py-20 section-reveal backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -342,7 +341,7 @@ const About = () => {
                 <div className="company-image relative overflow-hidden rounded-2xl shadow-2xl">
                   <img
                     src={cosap}
-                    alt="Our creative team at work"
+                    alt="Company event or workspace"
                     className="w-full h-80 object-cover transform hover:scale-105 transition duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -352,9 +351,12 @@ const About = () => {
                   </div>
                 </div>
                 <div className="company-image relative overflow-hidden rounded-2xl shadow-2xl mt-12">
-                  <img
-                    src={cosap}
-                    alt="Company event or workspace"
+                  <video
+                    src={videos} // replace with your video path
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
                     className="w-full h-80 object-cover transform hover:scale-105 transition duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -551,37 +553,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Partners Section */}
-      <section className="partners-section py-20 bg-gradient-to-r from-black/70 to-gray-900/70 backdrop-blur-sm overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h3 className="text-sm font-semibold text-[#D4AF37] uppercase tracking-wider">
-            Collaborations
-          </h3>
-          <h2 className="text-3xl font-bold mt-2 mb-12 font-montserrat">
-            Trusted By Leading Organizations
-          </h2>
-
-          {/* Scrolling container */}
-          <div className="relative w-full overflow-hidden">
-            <div className="flex gap-12 animate-marquee">
-              {[cosap, bethel, marconal, visualart].map((partner, idx) => (
-                <div
-                  key={idx}
-                  className="min-w-[150px] flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-[#D4AF37]/30 transition-all"
-                >
-                  <img
-                    src={partner}
-                    alt={`Partner ${idx + 1}`}
-                    className="max-h-16 object-contain grayscale hover:grayscale-0 transition-all duration-500"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 section-reveal bg-gradient-to-br from-black to-gray-900">
         <div className="max-w-4xl mx-auto px-6 text-center">
@@ -702,6 +673,10 @@ const About = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="partners-section section-reveal">
+        <PartnersCarousel />{" "}
       </section>
     </div>
   );

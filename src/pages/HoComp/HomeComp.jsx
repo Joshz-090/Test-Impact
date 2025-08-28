@@ -1,10 +1,12 @@
 import React from "react";
-import gold from "../../assets/images/gold.png";
-import white from "../../assets/images/white.png";
+import ImpactART from "../../assets/images/logos/black-bg-logo.png";
+import ImpactARTwhite from "../../assets/images/logos/white-bg-logo.png";
+import ImpactLOGO from "../../assets/images/logos/gold.png";
+import ImpactLOGOwhite from "../../assets/images/logos/white.png";
 import MissionVision3D from "./MissionVision3D";
 
 const HomeComp = () => {
-  const images = [gold, white, white, gold];
+  const images = [ImpactART, ImpactARTwhite, ImpactLOGOwhite, ImpactLOGO];
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 pt-40 pb-2" id="pre-About">
