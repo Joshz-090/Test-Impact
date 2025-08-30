@@ -111,8 +111,9 @@ const HeroSection = () => {
       <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <h1 className="hero-headline text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-shadow-[0_4px_12px_rgba(0,0,0,0.5)] font-['Montserrat']">
           Elevate Your Vision with{" "}
-          <span className="relative inline-block group cursor-pointer">
-            {/* Styling span content */}
+          <span className="relative inline-block group cursor-pointer text-[#D4AF37] transition-colors">
+            {/* Styling span content */}Impact Production
+            <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#D4AF37] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </span>
         </h1>
         <p

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+import LearnMoreButton from "../components/LearnMoreButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -181,7 +182,7 @@ const Services = () => {
 
   const services = [
     {
-      id: 1,
+      id: "art",
       title: "Art & Exhibition Creation",
       description:
         "Curate and organize stunning art exhibitions that showcase Ethiopian talent and inspire audiences. From concept to execution, we handle every detail.",
@@ -198,7 +199,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
     },
     {
-      id: 2,
+      id: "event",
       title: "Event Organization & Branding",
       description:
         "Create memorable brand experiences through strategic event planning and innovative branding solutions that leave lasting impressions.",
@@ -215,7 +216,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
     },
     {
-      id: 3,
+      id: "graphic",
       title: "Graphic Design & Content Creation",
       description:
         "Transform ideas into compelling visual stories with our comprehensive graphic design services that capture attention and convey messages effectively.",
@@ -232,7 +233,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
     },
     {
-      id: 4,
+      id: "digital",
       title: "Digital Marketing",
       description:
         "Drive growth and engagement through strategic digital marketing campaigns that reach your target audience and deliver measurable results.",
@@ -249,7 +250,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1557838923-2985c318be48?w=400&h=300&fit=crop",
     },
     {
-      id: 5,
+      id: "web",
       title: "Website & App Development",
       description:
         "Build cutting-edge digital experiences with responsive websites and mobile applications that engage users and drive results.",
@@ -266,7 +267,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
     },
     {
-      id: 6,
+      id: "arc",
       title: "Architectural & Interior Design",
       description:
         "Transform spaces with innovative interior design and construction solutions that blend functionality with artistic expression.",
@@ -283,7 +284,7 @@ const Services = () => {
         "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
     },
     {
-      id: 7,
+      id: "edu",
       title: "School Outreach & Educational Programs",
       description:
         "Empower the next generation through creative educational programs and school outreach initiatives that inspire learning and artistic expression.",
@@ -361,9 +362,7 @@ const Services = () => {
                     ))}
                   </div>
 
-                  <button className="mt-6 w-full bg-[#D4AF37] text-black py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors transform hover:-translate-y-1 duration-300">
-                    Learn More
-                  </button>
+                  <LearnMoreButton id={service.id} />
                 </div>
               </div>
             ))}

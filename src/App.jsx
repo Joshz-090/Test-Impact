@@ -16,6 +16,7 @@ import Portfolio from "./pages/Portfolio";
 import Team from "./pages/Team";
 import Events from "./pages/Events";
 import Contact from "./pages/Contact";
+import LearnMore from "./pages/LearnMore";
 
 // Scroll-to-top component
 function ScrollToTop() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/events" element={<Events />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/learnmore/:id" element={<LearnMore />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
