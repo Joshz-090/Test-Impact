@@ -197,6 +197,7 @@ const Departments = () => {
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
       color: "from-yellow-500 to-orange-500",
       manager: "Metasebiya Moges (Designer)",
+      telegramLink: "https://web.telegram.org/a/#-1003078661677",
     },
     {
       id: 2,
@@ -217,6 +218,7 @@ const Departments = () => {
         "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
       color: "from-blue-500 to-cyan-500",
       manager: "Yohanes Ayele (Artist)",
+      telegramLink: "https://web.telegram.org/a/#-1002972941045",
     },
     {
       id: 3,
@@ -237,6 +239,7 @@ const Departments = () => {
         "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
       color: "from-purple-500 to-pink-500",
       manager: "Lijeshet Abebe (Artist)",
+      telegramLink: "https://web.telegram.org/a/#-1002959582714", // Added Telegram link
     },
     {
       id: 4,
@@ -257,6 +260,7 @@ const Departments = () => {
         "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       color: "from-red-500 to-pink-500",
       manager: "Mikias Tadese (Architect)",
+      telegramLink: "https://t.me/impactdepartmentCD", // Added Telegram link
     },
     {
       id: 5,
@@ -277,6 +281,7 @@ const Departments = () => {
         "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
       color: "from-green-500 to-teal-500",
       manager: "Not Specified",
+      telegramLink: "https://web.telegram.org/a/#-1002903213520", // Added Telegram link
     },
   ];
 
@@ -319,6 +324,11 @@ const Departments = () => {
         "Collected funds through tickets, t-shirts, and other items to support Bethel Autism Center.",
     },
   ];
+
+  // Function to handle Telegram button click
+  const handleTelegramClick = (link) => {
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div
@@ -387,7 +397,10 @@ const Departments = () => {
                     </div>
                   </div>
 
-                  <button className="w-full bg-[#D4AF37] text-black py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors">
+                  <button
+                    className="w-full bg-[#D4AF37] text-black py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors"
+                    onClick={() => handleTelegramClick(dept.telegramLink)}
+                  >
                     Meet the Team
                   </button>
                 </div>

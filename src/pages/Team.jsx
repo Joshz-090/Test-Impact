@@ -1,378 +1,652 @@
-import Test from "../components/test";
-import Test2 from "../components/ThreeDemo";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaEnvelope,
+  FaGithub,
+  FaBehance,
+  FaPinterest,
+} from "react-icons/fa";
+import HeaderSection from "../components/test";
 
 const Team = () => {
+  const [activeFilter, setActiveFilter] = useState("All Departments");
+  const [visibleMembers, setVisibleMembers] = useState(8);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Departments
+  const departments = [
+    "All Departments",
+    "Event Organizing",
+    "Design and Marketing",
+    "Art",
+    "Construction",
+    "IT",
+  ];
+
+  // Team data
   const teamMembers = [
+    // Event Organizing Department
     {
       id: 1,
-      name: "Sarah Johnson",
-      title: "Creative Director & Founder",
-      bio: "Visionary leader with 15+ years of experience in creative direction and brand strategy. Sarah leads our creative vision and ensures every project exceeds expectations.",
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
-      department: "Design & Marketing",
-      experience: "15+ Years",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-        portfolio: "#",
-      },
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      title: "Art Director",
-      bio: "Passionate artist and curator with expertise in contemporary art and exhibition design. Michael brings artistic vision to every project we undertake.",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-      department: "Art",
-      experience: "12+ Years",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-        portfolio: "#",
-      },
-    },
-    {
-      id: 3,
       name: "Emily Rodriguez",
       title: "Event Director",
-      bio: "Experienced event planner specializing in creative event concepts and flawless execution. Emily ensures every event is memorable and impactful.",
+      bio: "Experienced event planner specializing in creative event concepts and flawless execution.",
       image:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
       department: "Event Organizing",
       experience: "10+ Years",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-        portfolio: "#",
-      },
+      isLeader: true,
+      social: { linkedin: "#", twitter: "#", instagram: "#" },
+    },
+    {
+      id: 2,
+      name: "Marcus Johnson",
+      title: "Senior Event Coordinator",
+      bio: "Specializes in corporate events and large-scale productions with meticulous attention to detail.",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+      department: "Event Organizing",
+      experience: "8+ Years",
+      social: { linkedin: "#", twitter: "#" },
+    },
+    {
+      id: 3,
+      name: "Sophia Williams",
+      title: "Venue Manager",
+      bio: "Expert in venue selection, logistics, and vendor coordination for events of all sizes.",
+      image:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+      department: "Event Organizing",
+      experience: "7+ Years",
+      social: { linkedin: "#", instagram: "#" },
     },
     {
       id: 4,
-      name: "David Kim",
-      title: "Lead Developer",
-      bio: "Full-stack developer with expertise in modern web technologies. David creates innovative digital solutions that drive business growth.",
+      name: "Daniel Lee",
+      title: "Event Production Specialist",
+      bio: "Technical production expert with background in audio-visual coordination and stage design.",
       image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      department: "IT/Web",
-      experience: "8+ Years",
-      social: {
-        linkedin: "#",
-        github: "#",
-        twitter: "#",
-        portfolio: "#",
-      },
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face",
+      department: "Event Organizing",
+      experience: "6+ Years",
+      social: { linkedin: "#", portfolio: "#" },
     },
     {
       id: 5,
+      name: "Olivia Martinez",
+      title: "Client Relations Manager",
+      bio: "Builds and maintains client relationships, ensuring their vision is realized in every event.",
+      image:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
+      department: "Event Organizing",
+      experience: "9+ Years",
+      social: { linkedin: "#", twitter: "#" },
+    },
+
+    // Design and Marketing Department
+    {
+      id: 6,
+      name: "Sarah Johnson",
+      title: "Creative Director & Founder",
+      bio: "Visionary leader with 15+ years of experience in creative direction and brand strategy.",
+      image:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
+      department: "Design and Marketing",
+      experience: "15+ Years",
+      isLeader: true,
+      social: { linkedin: "#", twitter: "#", instagram: "#", portfolio: "#" },
+    },
+    {
+      id: 7,
+      name: "Alex Martinez",
+      title: "Marketing Manager",
+      bio: "Strategic marketing professional with expertise in digital campaigns and brand development.",
+      image:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
+      department: "Design and Marketing",
+      experience: "9+ Years",
+      social: { linkedin: "#", twitter: "#", instagram: "#" },
+    },
+    {
+      id: 8,
+      name: "Rachel Green",
+      title: "Senior Designer",
+      bio: "Versatile designer specializing in brand identity and visual communication.",
+      image:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+      department: "Design and Marketing",
+      experience: "7+ Years",
+      social: { linkedin: "#", behance: "#", instagram: "#" },
+    },
+    {
+      id: 9,
+      name: "Thomas Wright",
+      title: "Digital Marketing Specialist",
+      bio: "Expert in SEO, SEM, and social media marketing strategies that drive engagement.",
+      image:
+        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=400&fit=crop&crop=face",
+      department: "Design and Marketing",
+      experience: "5+ Years",
+      social: { linkedin: "#", twitter: "#" },
+    },
+    {
+      id: 10,
+      name: "Jessica Kim",
+      title: "Content Strategist",
+      bio: "Creates compelling content strategies that resonate with target audiences and drive conversions.",
+      image:
+        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop&crop=face",
+      department: "Design and Marketing",
+      experience: "6+ Years",
+      social: { linkedin: "#", twitter: "#", portfolio: "#" },
+    },
+
+    // Art Department
+    {
+      id: 11,
+      name: "Michael Chen",
+      title: "Art Director",
+      bio: "Passionate artist and curator with expertise in contemporary art and exhibition design.",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+      department: "Art",
+      experience: "12+ Years",
+      isLeader: true,
+      social: { linkedin: "#", twitter: "#", instagram: "#" },
+    },
+    {
+      id: 12,
+      name: "Elena Rodriguez",
+      title: "Senior Artist",
+      bio: "Specializes in mixed media and large-scale installations for corporate and public spaces.",
+      image:
+        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop&crop=face",
+      department: "Art",
+      experience: "10+ Years",
+      social: { linkedin: "#", instagram: "#", portfolio: "#" },
+    },
+    {
+      id: 13,
+      name: "Carlos Mendez",
+      title: "Visual Designer",
+      bio: "Creates compelling visual narratives through illustration, typography, and digital media.",
+      image:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face",
+      department: "Art",
+      experience: "8+ Years",
+      social: { linkedin: "#", behance: "#" },
+    },
+    {
+      id: 14,
+      name: "Nina Patel",
+      title: "Art Restoration Specialist",
+      bio: "Expert in preserving and restoring artworks with traditional and modern techniques.",
+      image:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face",
+      department: "Art",
+      experience: "9+ Years",
+      social: { linkedin: "#", portfolio: "#" },
+    },
+
+    // Construction Department
+    {
+      id: 15,
       name: "Lisa Thompson",
       title: "Interior Designer",
-      bio: "Creative interior designer with a passion for sustainable design and innovative space solutions. Lisa transforms spaces into inspiring environments.",
+      bio: "Creative interior designer with a passion for sustainable design and innovative space solutions.",
       image:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
       department: "Construction",
       experience: "11+ Years",
-      social: {
-        linkedin: "#",
-        instagram: "#",
-        pinterest: "#",
-        portfolio: "#",
-      },
+      isLeader: true,
+      social: { linkedin: "#", instagram: "#", pinterest: "#" },
     },
     {
-      id: 6,
-      name: "Alex Martinez",
-      title: "Marketing Manager",
-      bio: "Strategic marketing professional with expertise in digital campaigns and brand development. Alex drives our marketing initiatives and client growth.",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
-      department: "Design & Marketing",
-      experience: "9+ Years",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        instagram: "#",
-        portfolio: "#",
-      },
-    },
-    {
-      id: 7,
-      name: "Rachel Green",
-      title: "Senior Designer",
-      bio: "Versatile designer specializing in brand identity and visual communication. Rachel creates compelling designs that connect with audiences.",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
-      department: "Design & Marketing",
-      experience: "7+ Years",
-      social: {
-        linkedin: "#",
-        behance: "#",
-        instagram: "#",
-        portfolio: "#",
-      },
-    },
-    {
-      id: 8,
+      id: 16,
       name: "James Wilson",
       title: "Project Manager",
-      bio: "Experienced project manager ensuring smooth delivery of complex creative projects. James coordinates teams and maintains quality standards.",
+      bio: "Experienced project manager ensuring smooth delivery of complex creative projects.",
       image:
         "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face",
       department: "Construction",
       experience: "13+ Years",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        portfolio: "#",
+      social: { linkedin: "#", twitter: "#" },
+    },
+    {
+      id: 17,
+      name: "Robert Kim",
+      title: "Structural Engineer",
+      bio: "Specializes in creating structurally sound yet aesthetically pleasing installations.",
+      image:
+        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face",
+      department: "Construction",
+      experience: "10+ Years",
+      social: { linkedin: "#", portfolio: "#" },
+    },
+    {
+      id: 18,
+      name: "Amanda Lewis",
+      title: "Site Supervisor",
+      bio: "Oversees on-site operations ensuring safety, quality, and timely completion of projects.",
+      image:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
+      department: "Construction",
+      experience: "8+ Years",
+      social: { linkedin: "#" },
+    },
+
+    // IT Department
+    {
+      id: 19,
+      name: "David Kim",
+      title: "Lead Developer",
+      bio: "Full-stack developer with expertise in modern web technologies and innovative digital solutions.",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+      department: "IT",
+      experience: "8+ Years",
+      isLeader: true,
+      social: { linkedin: "#", github: "#", twitter: "#" },
+    },
+    {
+      id: 20,
+      name: "Priya Sharma",
+      title: "UX/UI Designer",
+      bio: "Creates intuitive user experiences and visually appealing interfaces for digital products.",
+      image:
+        "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&h=400&fit=crop&crop=face",
+      department: "IT",
+      experience: "6+ Years",
+      social: { linkedin: "#", behance: "#", dribbble: "#" },
+    },
+    {
+      id: 21,
+      name: "Brian Taylor",
+      title: "Systems Administrator",
+      bio: "Manages IT infrastructure and ensures seamless operation of all technical systems.",
+      image:
+        "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=400&fit=crop&crop=face",
+      department: "IT",
+      experience: "7+ Years",
+      social: { linkedin: "#", github: "#" },
+    },
+    {
+      id: 22,
+      name: "Michelle Wong",
+      title: "Data Analyst",
+      bio: "Transforms complex data into actionable insights to drive business decisions.",
+      image:
+        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop&crop=face",
+      department: "IT",
+      experience: "5+ Years",
+      social: { linkedin: "#", twitter: "#" },
+    },
+  ];
+
+  // Filter members based on active filter
+  const filteredMembers =
+    activeFilter === "All Departments"
+      ? teamMembers
+      : teamMembers.filter((member) => member.department === activeFilter);
+
+  // Calculate department counts
+  const departmentCounts = departments.reduce((acc, dept) => {
+    if (dept === "All Departments") {
+      acc[dept] = teamMembers.length;
+    } else {
+      acc[dept] = teamMembers.filter((m) => m.department === dept).length;
+    }
+    return acc;
+  }, {});
+
+  // Load more members
+  const loadMore = () => {
+    setVisibleMembers((prev) => prev + 8);
+  };
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
       },
     },
-  ];
+  };
 
-  const departments = [
-    {
-      name: "Design & Marketing",
-      count: 3,
-      color: "bg-purple-100 text-purple-800",
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+      },
     },
-    { name: "Art", count: 1, color: "bg-yellow-100 text-yellow-800" },
-    { name: "Event Organizing", count: 1, color: "bg-blue-100 text-blue-800" },
-    { name: "IT/Web", count: 1, color: "bg-green-100 text-green-800" },
-    { name: "Construction", count: 2, color: "bg-red-100 text-red-800" },
-  ];
+  };
+
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: {
+      scale: 1.05,
+      transition: { duration: 0.2 },
+    },
+    tap: { scale: 0.95 },
+  };
+
+  // Simulate loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Render social icon based on platform
+  const renderSocialIcon = (platform, url) => {
+    const iconProps = { className: "w-4 h-4" };
+
+    switch (platform) {
+      case "linkedin":
+        return <FaLinkedin {...iconProps} />;
+      case "twitter":
+        return <FaTwitter {...iconProps} />;
+      case "instagram":
+        return <FaInstagram {...iconProps} />;
+      case "github":
+        return <FaGithub {...iconProps} />;
+      case "behance":
+        return <FaBehance {...iconProps} />;
+      case "pinterest":
+        return <FaPinterest {...iconProps} />;
+      case "portfolio":
+        return <FaEnvelope {...iconProps} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <>
-      <Test />
+    <div className="min-h-screen bg-gradient-to-b from-[#010120] to-[#111130] text-white font-sans overflow-hidden">
+      {/* Header Section */}
+      <HeaderSection />
+      <section className="relative py-20 bg-gradient-to-br from-[#111130] to-[#212140] text-white overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="absolute top-0 right-0 -mr-40 mt-10 opacity-10">
+          <svg
+            width="400"
+            height="400"
+            viewBox="0 0 400 400"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M200 0C89.543 0 0 89.543 0 200C0 310.457 89.543 400 200 400C310.457 400 400 310.457 400 200C400 89.543 310.457 0 200 0Z"
+              fill="#D4AF37"
+            />
+          </svg>
+        </div>
 
-      <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl sm:text-6xl font-bold mb-6 font-['Montserrat']">
-              Meet Our <span className="text-[#D4AF37]">Team</span>
-            </h1>
-            <p className="text-xl sm:text-2xl text-gray-300 max-w-4xl mx-auto">
-              Talented professionals passionate about creating exceptional art
-              and design experiences
-            </p>
-          </div>
-        </section>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            {departments.map((dept) => (
+              <motion.button
+                key={dept}
+                onClick={() => {
+                  setActiveFilter(dept);
+                  setVisibleMembers(8);
+                }}
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                  activeFilter === dept
+                    ? "bg-[#D4AF37] text-black shadow-lg"
+                    : "bg-white bg-opacity-10 text-white hover:bg-opacity-20 backdrop-blur-sm"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {dept} ({departmentCounts[dept]})
+              </motion.button>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
-        <Test2 />
+      {/* Team Grid Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl font-bold text-center text-black mb-16 font-montserrat"
+          >
+            {activeFilter} <span className="text-[#D4AF37]">Team</span>
+          </motion.h2>
 
-        {/* Team Stats */}
-        <section className="py-16 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-black mb-4 font-['Montserrat']">
-                Team <span className="text-[#D4AF37]">Overview</span>
-              </h2>
-              <p className="text-xl text-gray-600">
-                Our diverse team of creative professionals
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {departments.map((dept) => (
-                <div
-                  key={dept.name}
-                  className="text-center p-4 bg-white rounded-lg shadow-sm"
-                >
-                  <div
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-2 ${dept.color}`}
-                  >
-                    {dept.name}
-                  </div>
-                  <div className="text-2xl font-bold text-[#D4AF37]">
-                    {dept.count}
-                  </div>
-                  <div className="text-sm text-gray-600">Members</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Team Grid */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {teamMembers.map((member) => (
+              {[...Array(8)].map((_, i) => (
                 <div
-                  key={member.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
-                >
-                  <div className="relative">
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm font-semibold">
-                      {member.experience}
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-black mb-1 font-['Montserrat']">
-                      {member.name}
-                    </h3>
-                    <p className="text-[#D4AF37] font-medium mb-2">
-                      {member.title}
-                    </p>
-                    <p className="text-gray-600 text-sm mb-4">{member.bio}</p>
-
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs text-gray-500 uppercase tracking-wide">
-                        {member.department}
-                      </span>
-                    </div>
-
-                    {/* Social Media Icons */}
-                    <div className="flex space-x-3">
-                      {member.social.linkedin && (
-                        <a
-                          href={member.social.linkedin}
-                          className="text-gray-400 hover:text-[#D4AF37] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                          </svg>
-                        </a>
-                      )}
-                      {member.social.twitter && (
-                        <a
-                          href={member.social.twitter}
-                          className="text-gray-400 hover:text-[#D4AF37] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                          </svg>
-                        </a>
-                      )}
-                      {member.social.instagram && (
-                        <a
-                          href={member.social.instagram}
-                          className="text-gray-400 hover:text-[#D4AF37] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
-                          </svg>
-                        </a>
-                      )}
-                      {member.social.portfolio && (
-                        <a
-                          href={member.social.portfolio}
-                          className="text-gray-400 hover:text-[#D4AF37] transition-colors"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.493-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.35v-2.715c0-.4-.122-.719-.368-.979-.245-.259-.587-.389-.988-.389-.416 0-.752.13-1.012.389-.26.26-.39.579-.39.979v2.715h-1.35v-6h1.35v1.119c.325-.279.69-.419 1.095-.419.416 0 .752.13 1.012.389.26.26.39.579.39.979v2.715h1.35v-6h1.35v6z" />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  key={i}
+                  className="bg-gray-100 rounded-xl h-96 animate-pulse"
+                ></div>
               ))}
             </div>
-          </div>
-        </section>
+          ) : (
+            <>
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+              >
+                <AnimatePresence>
+                  {filteredMembers.slice(0, visibleMembers).map((member) => (
+                    <motion.div
+                      key={member.id}
+                      variants={itemVariants}
+                      layout
+                      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                    >
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-xs font-semibold">
+                          {member.experience}
+                        </div>
+                        {member.isLeader && (
+                          <div className="absolute top-4 right-4 bg-black text-[#D4AF37] px-3 py-1 rounded-full text-xs font-bold">
+                            Team Lead
+                          </div>
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                          <h3 className="text-white font-semibold text-lg">
+                            {member.name}
+                          </h3>
+                          <p className="text-[#D4AF37] text-sm">
+                            {member.title}
+                          </p>
+                        </div>
+                      </div>
 
-        {/* Team Culture */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 font-['Montserrat']">
-                Our <span className="text-[#D4AF37]">Culture</span>
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                What makes our team special and how we work together
-              </p>
-            </div>
+                      <div className="p-6">
+                        <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                          {member.bio}
+                        </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🎨</span>
-                </div>
-                <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">
-                  Creative Freedom
-                </h3>
-                <p className="text-gray-700">
-                  We encourage innovation and creative expression, allowing each
-                  team member to bring their unique perspective to projects.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🤝</span>
-                </div>
-                <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">
-                  Collaboration
-                </h3>
-                <p className="text-gray-700">
-                  We believe in the power of teamwork and foster an environment
-                  where ideas flow freely and skills complement each other.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">📈</span>
-                </div>
-                <h3 className="text-xl font-semibold text-black mb-2 font-['Montserrat']">
-                  Growth
-                </h3>
-                <p className="text-gray-700">
-                  Continuous learning and professional development are core to
-                  our culture, ensuring we stay at the forefront of our
-                  industry.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            {member.department}
+                          </span>
+                        </div>
 
-        {/* Join Our Team */}
-        <section className="py-20 bg-black text-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6 font-['Montserrat']">
-              Join Our <span className="text-[#D4AF37]">Creative Team</span>
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              We're always looking for talented individuals who share our
-              passion for creativity and innovation
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-[#D4AF37] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors shadow-lg text-lg">
-                View Open Positions
-              </button>
-              <button className="border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-lg font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors text-lg">
-                Send Your Resume
-              </button>
-            </div>
+                        <div className="flex space-x-3">
+                          {Object.entries(member.social).map(
+                            ([platform, url]) => (
+                              <motion.a
+                                key={platform}
+                                href={url}
+                                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#D4AF37] hover:text-white transition-colors"
+                                whileHover={{ y: -3 }}
+                                aria-label={`${member.name}'s ${platform}`}
+                              >
+                                {renderSocialIcon(platform, url)}
+                              </motion.a>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+
+              {visibleMembers < filteredMembers.length && (
+                <motion.div
+                  className="text-center mt-16"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <motion.button
+                    onClick={loadMore}
+                    className="px-8 py-3 bg-[#D4AF37] text-black font-semibold rounded-full relative overflow-hidden group"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                  >
+                    <span className="relative z-10">
+                      Load More Team Members
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#B8941F] to-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </motion.button>
+                </motion.div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <motion.div
+              className="p-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl md:text-5xl font-bold text-[#D4AF37] mb-2">
+                {teamMembers.length}+
+              </div>
+              <div className="text-gray-400">Team Members</div>
+            </motion.div>
+
+            <motion.div
+              className="p-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl md:text-5xl font-bold text-[#D4AF37] mb-2">
+                {departments.length - 1}
+              </div>
+              <div className="text-gray-400">Departments</div>
+            </motion.div>
+
+            <motion.div
+              className="p-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl md:text-5xl font-bold text-[#D4AF37] mb-2">
+                150+
+              </div>
+              <div className="text-gray-400">Projects Completed</div>
+            </motion.div>
+
+            <motion.div
+              className="p-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl md:text-5xl font-bold text-[#D4AF37] mb-2">
+                12
+              </div>
+              <div className="text-gray-400">Years Experience</div>
+            </motion.div>
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-3xl sm:text-4xl font-bold mb-6 font-montserrat"
+          >
+            Join Our <span className="text-[#D4AF37]">Creative Team</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto"
+          >
+            We're always looking for talented individuals who share our passion
+            for creativity and innovation.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
+            <motion.button
+              className="px-8 py-4 bg-[#D4AF37] text-black font-semibold rounded-lg hover:bg-[#B8941F] transition-colors shadow-lg"
+              whileHover={{ y: -2 }}
+              whileTap={{ y: 0 }}
+            >
+              View Open Positions
+            </motion.button>
+
+            <motion.button
+              className="px-8 py-4 border-2 border-[#D4AF37] text-[#D4AF37] font-semibold rounded-lg hover:bg-[#D4AF37] hover:text-black transition-colors"
+              whileHover={{ y: -2 }}
+              whileTap={{ y: 0 }}
+            >
+              Send Your Resume
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 };
 

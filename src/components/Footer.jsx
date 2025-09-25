@@ -1,6 +1,82 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { collection, addDoc, query, where, getDocs, limit } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+
+  const showMessage = (text, type) => {
+    setMessage(text);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 4000);
+  };
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      showMessage("Please enter a valid email address", "error");
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage("Please wait...");
+    setMessageType("");
+
+    try {
+      // Try to check if email already exists (may fail due to permissions)
+      let isDuplicate = false;
+      try {
+        const subscribersRef = collection(db, "subscribers");
+        const q = query(
+          subscribersRef,
+          where("email", "==", email.trim().toLowerCase()),
+          limit(1)
+        );
+        const existingSubscribers = await getDocs(q);
+        isDuplicate = !existingSubscribers.empty;
+      } catch (checkError) {
+        console.warn("Could not check for duplicates due to permissions:", checkError);
+        // Continue with subscription attempt
+      }
+
+      if (isDuplicate) {
+        showMessage("This account is already subscribed", "error");
+        setIsLoading(false);
+        return;
+      }
+
+      // Add new subscriber
+      await addDoc(collection(db, "subscribers"), {
+        email: email.trim().toLowerCase(),
+        subscribedAt: new Date(),
+        status: "active"
+      });
+
+      setEmail("");
+      showMessage("Successfully subscribed! Thank you for joining us.", "success");
+    } catch (error) {
+      console.error("Subscription error:", error);
+      
+      // Provide more specific error messages
+      if (error.code === 'permission-denied') {
+        showMessage("Subscription service temporarily unavailable. Please contact support.", "error");
+      } else if (error.code === 'unavailable') {
+        showMessage("Network error. Please check your connection and try again.", "error");
+      } else {
+        showMessage("Failed to subscribe. Please try again later.", "error");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -197,7 +273,7 @@ const Footer = () => {
           </motion.div>
         </motion.div>
 
-        {/* Newsletter */}
+        
         <motion.div
           className="border-t border-gray-800 mt-12 pt-8"
           initial={{ opacity: 0, y: 20 }}
@@ -211,25 +287,49 @@ const Footer = () => {
             <p className="text-gray-300 text-sm sm:text-base">
               Subscribe to our newsletter for the latest updates and events
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <motion.input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all duration-300"
                 whileFocus={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
+                disabled={isLoading}
+                required
               />
               <motion.button
-                className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-all duration-300"
-                whileHover={{
+                type="submit"
+                disabled={isLoading}
+                className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={!isLoading ? {
                   scale: 1.05,
                   boxShadow: "0 0 15px rgba(212, 175, 55, 0.5)",
-                }}
-                whileTap={{ scale: 0.95 }}
+                } : {}}
+                whileTap={!isLoading ? { scale: 0.95 } : {}}
               >
-                Subscribe
+                {isLoading ? "Please wait..." : "Subscribe"}
               </motion.button>
-            </div>
+            </form>
+            
+            {/* Message Display */}
+            {message && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className={`mt-4 p-3 rounded-lg text-sm text-center max-w-md mx-auto ${
+                  messageType === "success" 
+                    ? "bg-green-900/20 text-green-300 border border-green-500/30" 
+                    : messageType === "error"
+                    ? "bg-red-900/20 text-red-300 border border-red-500/30"
+                    : "bg-gray-800/50 text-gray-300"
+                }`}
+              >
+                {message}
+              </motion.div>
+            )}
           </div>
         </motion.div>
 

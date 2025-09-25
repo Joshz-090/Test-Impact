@@ -6,16 +6,18 @@ import img from "../../assets/images/R/images.png"; // Replace with real images 
 import sosina from "../../assets/images/members/Sosina.png";
 import kalkidan from "../../assets/images/members/kalkidan.png";
 import Lijeshet from "../../assets/images/members/Lijeshet.png";
-import metasebiya from "../../assets/images/members/metasebiya.png";
+import Fitsum from "../../assets/images/members/Fitsum.png";
 import yohanes from "../../assets/images/members/yohanes.png";
 import tsehay from "../../assets/images/members/tsehay.png";
 import Mikias from "../../assets/images/members/Mikias.png";
+import Nahome from "../../assets/images/members/nahome.png";
 
 const HomeComp6 = () => {
   const [visibleMembers, setVisibleMembers] = useState(6);
   const [showAllMessage, setShowAllMessage] = useState(false);
   const [filter, setFilter] = useState("all");
   const [sortedMembers, setSortedMembers] = useState([]);
+  const [expandedCards, setExpandedCards] = useState({});
 
   const teamMembers = [
     {
@@ -23,8 +25,8 @@ const HomeComp6 = () => {
       name: "Sosina Eshetu",
       position: "CEO & Founder",
       description:
-        "Event Organizer and Artist with over 10 years of experience in creative direction and community engagement.",
-      image: sosina,
+        "Event Organizer and Artist with over 10 years of experience. A young female leader dynamic and accomplished individual with a diverse skill set spanning event organization, team leadership, and creative entrepreneurship.",
+      image: sosina, // Use the imported sosina image
       social: {
         linkedin: "#",
         twitter: "#",
@@ -38,8 +40,8 @@ const HomeComp6 = () => {
       name: "Kalkidan Nega",
       position: "Managing Director",
       description:
-        "Architect and Digital Marketing specialist with expertise in combining design thinking with strategic marketing.",
-      image: kalkidan,
+        "Architect and versatile professional excelling in digital marketing, graphic design, content creation, architectural design, and interior design.",
+      image: kalkidan, // Use the imported kalkidan image
       social: {
         linkedin: "#",
         instagram: "#",
@@ -50,88 +52,90 @@ const HomeComp6 = () => {
     },
     {
       id: 3,
-      name: "Yonas Tekle",
-      position: "Lead Designer",
+      name: "Mikias Tadese",
+      position: "Construction Department Manager",
       description:
-        "Creative designer with a background in visual arts and a passion for creating impactful brand identities.",
-      image: yohanes,
+        "Architect with a strong background in architecture and construction management. A talented individual with extensive experience in construction projects.",
+      image: Mikias, // Use the imported Mikias image
       social: {
         linkedin: "#",
-        instagram: "#",
-        email: "yonas@impact.com",
+        email: "mikias@impact.com",
       },
-      department: "design",
+      department: "construction",
+      isPriority: true,
     },
     {
       id: 4,
-      name: "Meron Abebe",
-      position: "Creative Director",
+      name: "Fitsum Bereket",
+      position: "Event Organizer Department Manager",
       description:
-        "Visual storyteller with expertise in photography and film production.",
-      image: metasebiya,
+        "Skilled designer and event management professional with talent for organizing events and managing teams effectively.",
+      image: Fitsum, // You'll need to import Fitsum's image
       social: {
         linkedin: "#",
         instagram: "#",
-        email: "meron@impact.com",
+        email: "fitsum@impact.com",
       },
-      department: "creative",
+      department: "events",
     },
     {
       id: 5,
-      name: "Daniel Mekonnen",
-      position: "Technical Lead",
+      name: "Lijeshet Abebe",
+      position: "Art Department Manager",
       description:
-        "Software engineer specializing in interactive installations and web development.",
-      image: Mikias,
+        "Hyper-realistic artist specializing in custom graphite drawings, with additional expertise in social media management.",
+      image: Lijeshet, // Use the imported Lijeshet image
       social: {
         linkedin: "#",
-        email: "daniel@impact.com",
+        instagram: "#",
+        email: "lijeshet@impact.com",
       },
-      department: "technology",
+      department: "art",
       isPriority: true,
     },
     {
       id: 6,
-      name: "Selamawit Assefa",
-      position: "Marketing Manager",
+      name: "Yohanes Ayalew",
+      position: "Design and Marketing Department Manager",
       description:
-        "Digital marketing expert with a focus on social media strategy.",
-      image: tsehay,
+        "Talented designer who excels at managing multiple projects effectively with strong organizational skills and marketing expertise.",
+      image: yohanes, // Use the imported yohanes image
       social: {
         linkedin: "#",
-        instagram: "#",
-        email: "selamawit@impact.com",
-      },
-      department: "marketing",
-      isPriority: true,
-    },
-    {
-      id: 7,
-      name: "Ephrem Tadesse",
-      position: "Event Coordinator",
-      description:
-        "Logistics specialist with experience in large-scale event planning.",
-      image: Lijeshet,
-      social: {
-        linkedin: "#",
-        email: "ephrem@impact.com",
-      },
-      department: "operations",
-    },
-    {
-      id: 8,
-      name: "Hanna Girma",
-      position: "Graphic Designer",
-      description:
-        "Brand identity specialist with a minimalist design approach.",
-      image: img,
-      social: {
-        linkedin: "#",
-        behance: "#",
-        email: "hanna@impact.com",
+        twitter: "#",
+        email: "yohanes@impact.com",
       },
       department: "design",
     },
+    // Keep the rest of your team members or remove them if not needed
+    {
+      id: 7,
+      name: "Tsehay Asefa",
+      position: "Teaching and Fine Art Division Head",
+      description:
+        "Talented fine art artist who has successfully translated her passion into a thriving business, participating in numerous art exhibitions.",
+      image: tsehay, // Use the imported tsehay image
+      social: {
+        linkedin: "#",
+        instagram: "#",
+        email: "tsehay@impact.com",
+      },
+      department: "art",
+    },
+    {
+      id: 8,
+      name: "Nahom Getnet",
+      position: "IT Department Manager",
+      description:
+        "Web development specialist with a computer science background, combining technical expertise with creative solutions.",
+      image: Nahome,
+      social: {
+        linkedin: "#",
+        email: "nahom@impact.com",
+      },
+      department: "technology",
+    },
+
     {
       id: 9,
       name: "Tewodros Kebede",
@@ -222,6 +226,13 @@ const HomeComp6 = () => {
       },
     },
     tap: { scale: 0.95 },
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   return (
@@ -337,8 +348,20 @@ const HomeComp6 = () => {
                         </p>
 
                         {/* Description with improved typography */}
-                        <p className="text-gray-700 text-sm mb-6 leading-relaxed border-l-3 border-[#D4AF37] pl-4 italic">
-                          {member.description}
+                        <p className="text-gray-700 text-sm mb-3 leading-relaxed border-l-3 border-[#D4AF37] pl-4 italic">
+                          {expandedCards[member.id]
+                            ? member.description
+                            : `${member.description.substring(0, 100)}...`}
+                          {member.description.length > 100 && (
+                            <button
+                              onClick={() => toggleExpand(member.id)}
+                              className="text-[#D4AF37] font-semibold ml-1 hover:text-[#8E6C29] transition-colors focus:outline-none"
+                            >
+                              {expandedCards[member.id]
+                                ? "Read Less"
+                                : "Read More"}
+                            </button>
+                          )}
                         </p>
 
                         {/* Social links with enhanced styling */}
@@ -445,8 +468,20 @@ const HomeComp6 = () => {
                       <p className="text-[#D4AF37] text-sm font-semibold mb-2">
                         {member.position}
                       </p>
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-                        {member.description}
+                      <p className="text-gray-700 text-sm mb-3 leading-relaxed border-l-3 border-[#D4AF37] pl-4 italic">
+                        {expandedCards[member.id]
+                          ? member.description
+                          : `${member.description.substring(0, 100)}...`}
+                        {member.description.length > 100 && (
+                          <button
+                            onClick={() => toggleExpand(member.id)}
+                            className="text-gray-900 font-semibold ml-1 hover:text-[#9E7C39] transition-colors focus:outline-none"
+                          >
+                            {expandedCards[member.id]
+                              ? "Read Less"
+                              : "Read More"}
+                          </button>
+                        )}
                       </p>
                       <div className="flex justify-center space-x-2">
                         {member.social.linkedin && (

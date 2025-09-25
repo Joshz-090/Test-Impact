@@ -172,15 +172,19 @@ const About = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white font-sans"
+      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#111130] text-white font-sans overflow-hidden"
       ref={containerRef}
     >
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <canvas ref={canvasRef} className="absolute inset-0" />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          style={{ display: "block" }} // Ensure canvas is visible
+        />
         <div className="relative z-10 text-center px-4 backdrop-blur-sm bg-black/30 rounded-2xl py-12">
-          <h1 className="hero-title text-4xl md:text-7xl font-bold mb-6 font-montserrat">
-            Meet Our <span className="text-[#D4AF37] ">Team</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-montserrat">
+            Our <span className="text-[#D4AF37]">Creative Team</span>
           </h1>
           <p className="hero-title text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto">
             Talented professionals passionate about creating exceptional art and
