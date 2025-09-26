@@ -5,7 +5,7 @@ import ImpactLOGO from "../../assets/images/logos/gold.png";
 import ImpactLOGOwhite from "../../assets/images/logos/white.png";
 import MissionVision3D from "./MissionVision3D";
 
-const HomeComp = () => {
+const AboutSec = () => {
   const images = [ImpactART, ImpactARTwhite, ImpactLOGOwhite, ImpactLOGO];
 
   return (
@@ -105,4 +105,4 @@ const AnimatedButton = ({ text }) => {
   );
 };
 
-export default HomeComp;
+export default AboutSec;

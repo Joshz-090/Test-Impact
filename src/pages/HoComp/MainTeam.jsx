@@ -12,7 +12,7 @@ import tsehay from "../../assets/images/members/tsehay.png";
 import Mikias from "../../assets/images/members/Mikias.png";
 import Nahome from "../../assets/images/members/nahome.png";
 
-const HomeComp6 = () => {
+const MainTeam = () => {
   const [visibleMembers, setVisibleMembers] = useState(6);
   const [showAllMessage, setShowAllMessage] = useState(false);
   const [filter, setFilter] = useState("all");
@@ -578,4 +578,4 @@ const HomeComp6 = () => {
   );
 };
 
-export default HomeComp6;
+export default MainTeam;

@@ -1,10 +1,10 @@
 import HeroSection from "./HoComp/HeroSection";
 import Transition from "../components/Transition";
 import PartnersCarousel from "../components/PartnersCarousel";
-import HomeComp from "./HoComp/HomeComp";
-import HomeComp3 from "./HoComp/HomeComp3";
-import HomeComp4 from "./HoComp/HomeComp4";
-import HomeComp6 from "./HoComp/HomeComp6";
+import AboutSec from "./HoComp/AboutSec";
+import Stats from "./HoComp/Stats";
+import ServiceSec from "./HoComp/ServiceSec";
+import MainTeam from "./HoComp/MainTeam";
 import backgroundImage from "../assets/images/R/Screenshot.png";
 
 const Home = () => {
@@ -45,8 +45,8 @@ const Home = () => {
       <div className="h-10 bg-gradient-to-b from-black/95 to-black"></div>
       <Transition />
 
-      <HomeComp />
-      <HomeComp3
+      <AboutSec />
+      <Stats
         primaryColor="#D4AF37" // Aligned with branding
         textColor="#f5f5f5"
         lightBg="#212121"
@@ -58,8 +58,8 @@ const Home = () => {
         ]}
         backgroundImage={backgroundImage}
       />
-      <HomeComp4 />
-      <HomeComp6 />
+      <ServiceSec />
+      <MainTeam />
       {/* Key Achievements Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

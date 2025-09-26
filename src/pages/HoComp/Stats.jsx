@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./HomeComp3.css";
+import "./Stats.css";
 
-const HomeComp3 = ({
+const Stats = ({
   primaryColor,
   textColor,
   lightBg,
@@ -130,4 +130,4 @@ const HomeComp3 = ({
   );
 };
 
-export default HomeComp3;
+export default Stats;

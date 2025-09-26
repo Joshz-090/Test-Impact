@@ -132,11 +132,13 @@ const HeroSection = () => {
         >
           <Button
             text="Explore Our Work"
+            link="/portfolio"
             onClick={() => {}}
             className="transform hover:scale-105 transition-transform"
           />
           <Button53
             text="Start Your Project"
+            link="/start-project"
             className="transform hover:scale-105 transition-transform"
           />
         </div>

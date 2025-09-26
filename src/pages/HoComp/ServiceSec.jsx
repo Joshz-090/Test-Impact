@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./HomeComp4.css";
+import "./ServiceSec.css";
 
 import eventImg from "../../assets/images/R/event.jpg";
 import graphicImg from "../../assets/images/R/graphoc.jpg";
@@ -54,7 +54,7 @@ const services = [
   },
 ];
 
-const HomeComp4 = () => {
+const ServiceSec = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const timerRef = useRef(null);
 
@@ -194,4 +194,4 @@ const HomeComp4 = () => {
   );
 };
 
-export default HomeComp4;
+export default ServiceSec;
