@@ -54,7 +54,7 @@ export default function Login() {
               </svg>
             </div>
             <h1 className="text-xl font-semibold mb-2 text-red-600">Access Denied</h1>
-            <p className="text-gray-600 mb-4">Your account doesn't have admin access.</p>
+          <p className="text-gray-600 mb-4">Your account doesn't have admin access.</p>
             <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4 text-sm text-yellow-800">
               <p><strong>Troubleshooting:</strong></p>
               <p>If you should have admin access, check that:</p>
@@ -199,7 +199,7 @@ export default function Login() {
               "Sign In"
             )}
           </button>
-        </form>
+      </form>
         
         <div className="mt-6 text-center">
           <button 
