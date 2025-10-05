@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import "./ServiceSec.css";
 
 import eventImg from "../../assets/images/R/event.jpg";
@@ -8,9 +9,10 @@ import arcImg from "../../assets/images/R/arc.jpg";
 import webImg from "../../assets/images/R/web.jpg";
 import brandImg from "../../assets/images/R/brand.jpg";
 
-// Service data with fallback images
+// Service data aligned with Learn More IDs
 const services = [
   {
+    id: "events-exhibitions",
     title: "EVENT ORGANIZING & EXHIBITIONS",
     description:
       "Creating unique event concepts for exhibitions and art showcases, collaborating with young artists.",
@@ -18,6 +20,7 @@ const services = [
     image: eventImg, // Replace with actual import: import eventImg from "../../assets/images/R/event.jpg"
   },
   {
+    id: "graphic-digital",
     title: "GRAPHIC DESIGN & DIGITAL MARKETING",
     description:
       "Designing promotional materials and posters, with online, influencer, and direct marketing.",
@@ -25,6 +28,7 @@ const services = [
     image: graphicImg, // Replace with actual import
   },
   {
+    id: "art-department",
     title: "ART WORKS & CONTENT CREATION",
     description:
       "Producing artist profiles, event descriptions, and hyper-realistic art with custom graphite drawings.",
@@ -32,6 +36,7 @@ const services = [
     image: artImg, // Replace with actual import
   },
   {
+    id: "construction-architecture",
     title: "ARCHITECTURAL & INTERIOR DESIGN",
     description:
       "Optimizing exhibition spaces with architectural design, feasibility studies, and interior design.",
@@ -39,6 +44,7 @@ const services = [
     image: arcImg, // Replace with actual import
   },
   {
+    id: "it-web",
     title: "WEBSITE DESIGN & DEVELOPMENT",
     description:
       "Building websites with front-end/back-end development, UI design, and testing.",
@@ -46,11 +52,12 @@ const services = [
     image: webImg, // Replace with actual import
   },
   {
-    title: "BRAND STRATEGY & SOCIAL MEDIA",
+    id: "media-printing",
+    title: "MEDIA & PRINTING",
     description:
-      "Developing brand strategies and managing social media for art events and exhibitions.",
+      "Photography, promotional materials, and printing solutions for campaigns and events.",
     link: "LEARN MORE →",
-    image: brandImg, // Replace with actual import
+    image: brandImg, // Using available asset as visual
   },
 ];
 
@@ -153,9 +160,9 @@ const ServiceSec = () => {
                 <div className="card-text-container">
                   <h3>{service.title}</h3>
                   <p>{service.description}</p>
-                  <a href="#" className="learn-more">
+                  <Link to={`/learnmore/${service.id}`} className="learn-more">
                     {service.link}
-                  </a>
+                  </Link>
                 </div>
               </div>
             );

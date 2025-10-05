@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import ImpactART from "../../assets/images/logos/black-bg-logo.png";
 import ImpactARTwhite from "../../assets/images/logos/white-bg-logo.png";
 import ImpactLOGO from "../../assets/images/logos/gold.png";
@@ -77,8 +78,12 @@ const AboutSec = () => {
 };
 
 const AnimatedButton = ({ text }) => {
+  const navigate = useNavigate();
   return (
-    <button className="animated-button group">
+    <button
+      className="animated-button group"
+      onClick={() => navigate("/about#about-us")}
+    >
       <span className="button-text">{text}</span>
       <span className="button-icon">
         <svg width="50px" height="20px" viewBox="0 0 66 43" version="1.1">

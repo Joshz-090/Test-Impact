@@ -1,4 +1,5 @@
 import HeroSection from "./HoComp/HeroSection";
+import { Link } from "react-router-dom";
 import Transition from "../components/Transition";
 import PartnersCarousel from "../components/PartnersCarousel";
 import AboutSec from "./HoComp/AboutSec";
@@ -10,31 +11,34 @@ import backgroundImage from "../assets/images/R/Screenshot.png";
 const Home = () => {
   const events = [
     {
-      id: 1,
-      title: "Hebar Art Gallery Exhibition",
-      date: "Recent Event",
+      id: "exhibitions-events",
+      title: "Exhibitions & Events",
+      date: "Impact Highlights",
       description:
-        "Successfully hosted art gallery events with 950+ attendees, showcasing local Ethiopian artists and fostering community engagement.",
+        "Organized large art exhibitions with 10+ organizations and 950+ guests at Hebar Art Gallery; hosted national youth drawing competitions; led awareness campaigns including the 16‑day anti‑sexual violence movement; produced the Annual Learning & Sharing Forum at Inter Luxury Hotel; supported KNH’s 50‑year operations in Ethiopia.",
       image:
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1515165562835-c3b8c2e07f8f?w=400&h=300&fit=crop",
+      to: "/impact/exhibitions-events",
     },
     {
-      id: 2,
-      title: "National Drawing Competition",
-      date: "Ongoing Program",
+      id: "community-impact",
+      title: "Community Impact",
+      date: "Social Programs",
       description:
-        "Organizing national drawing competitions for young artists, empowering the next generation of Ethiopian creatives.",
+        "Raised funds for Bethel Autism Center through events and sales; partnered with NGOs like CoSAP, Dalasalle, Abogida Young Women Leaders Association, and more; created platforms for child artists and education in schools.",
       image:
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1515169067865-d9fdd1a1a307?w=400&h=300&fit=crop",
+      to: "/impact/community-impact",
     },
     {
-      id: 3,
-      title: "Awareness Campaigns",
-      date: "Community Outreach",
+      id: "creative-services",
+      title: "Creative & Professional Services",
+      date: "Client Delivery",
       description:
-        "Leading multiple awareness campaigns on GBV, health, and education through creative art and design initiatives.",
+        "Delivered graphic design, branding, website development, architectural design, and printing solutions; produced professional photography, digital campaigns, and promotional materials for NGOs and organizations.",
       image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop",
+      to: "/impact/creative-services",
     },
   ];
 
@@ -96,9 +100,12 @@ const Home = () => {
                   <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                     {event.description}
                   </p>
-                  <button className="text-[#D4AF37] font-semibold hover:text-[#B8941F] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37]">
+                  <Link
+                    to={event.to}
+                    className="text-[#D4AF37] font-semibold hover:text-[#B8941F] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  >
                     Learn More →
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

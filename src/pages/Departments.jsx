@@ -1,13 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+import { db } from "../firebase";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Departments = () => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const [departments, setDepartments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch departments from Firestore
+  useEffect(() => {
+    const q = query(
+      collection(db, "departments"),
+      orderBy("timestamp", "desc")
+    );
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setDepartments(data);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error loading departments:", error);
+        setIsLoading(false);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     let scene, camera, renderer, particles;
@@ -177,114 +205,6 @@ const Departments = () => {
     return () => ctx.revert();
   }, []);
 
-  const departments = [
-    {
-      id: 1,
-      name: "Event Organizing Department",
-      description:
-        "Dedicated to creating unique event concepts that align with artistic visions, organizing exhibitions, and fostering connections in the artistic community.",
-      icon: "📅",
-      teamSize: "6 Members",
-      specialties: [
-        "Event Planning & Coordination",
-        "Exhibition Organization",
-        "Artist Showcases",
-        "Community Engagement",
-        "Logistics Management",
-        "Promotional Campaigns",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-      color: "from-yellow-500 to-orange-500",
-      manager: "Metasebiya Moges (Designer)",
-      telegramLink: "https://web.telegram.org/a/#-1003078661677",
-    },
-    {
-      id: 2,
-      name: "Design and Marketing Department",
-      description:
-        "Excels in graphic design, digital marketing, content creation, and creating visually appealing promotional materials to showcase artists' work effectively.",
-      icon: "🖌️",
-      teamSize: "8 Members",
-      specialties: [
-        "Graphic Design",
-        "Digital Marketing",
-        "Content Creation",
-        "Brand Identity",
-        "Social Media Strategy",
-        "Promotional Materials",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      color: "from-blue-500 to-cyan-500",
-      manager: "Yohanes Ayele (Artist)",
-      telegramLink: "https://web.telegram.org/a/#-1002972941045",
-    },
-    {
-      id: 3,
-      name: "Art Department",
-      description:
-        "Focused on promoting artistic excellence, curating exhibitions, supporting young artists, and creating impactful art experiences that resonate with audiences.",
-      icon: "🎨",
-      teamSize: "5 Members",
-      specialties: [
-        "Hyper-realistic Drawings",
-        "Art Curation",
-        "Exhibition Design",
-        "Artist Support",
-        "Custom Graphite Drawings",
-        "Social Media Management",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-      color: "from-purple-500 to-pink-500",
-      manager: "Lijeshet Abebe (Artist)",
-      telegramLink: "https://web.telegram.org/a/#-1002959582714", // Added Telegram link
-    },
-    {
-      id: 4,
-      name: "Construction Department",
-      description:
-        "Specializes in architectural design, interior design, construction management, and creating innovative spaces for art exhibitions and events.",
-      icon: "🏗️",
-      teamSize: "9 Members",
-      specialties: [
-        "Architectural Design",
-        "Interior Design",
-        "Construction Management",
-        "Space Planning",
-        "Renovation Projects",
-        "Project Supervision",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-      color: "from-red-500 to-pink-500",
-      manager: "Mikias Tadese (Architect)",
-      telegramLink: "https://t.me/impactdepartmentCD", // Added Telegram link
-    },
-    {
-      id: 5,
-      name: "IT Department",
-      description:
-        "Handles website design, front-end and back-end development, UI/UX, and digital infrastructure to support the company's online presence and operations.",
-      icon: "💻",
-      teamSize: "7 Members",
-      specialties: [
-        "Website Development",
-        "Front-end & Back-end",
-        "UI/UX Design",
-        "Custom Software",
-        "Digital Solutions",
-        "System Maintenance",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-      color: "from-green-500 to-teal-500",
-      manager: "Not Specified",
-      telegramLink: "https://web.telegram.org/a/#-1002903213520", // Added Telegram link
-    },
-  ];
-
   const partners = [
     "Abogida Young Women Leaders Association",
     "Bethel Autism Center",
@@ -349,64 +269,134 @@ const Departments = () => {
         </div>
       </section>
 
+      {/* Section Title: Between Hero and Grid */}
+      <section className="section-reveal py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 font-['Montserrat']">
+            Explore Our <span className="text-[#D4AF37]">Departments</span>
+          </h2>
+          <p className="text-base sm:text-lg text-gray-300 max-w-3xl mx-auto">
+            Discover specialized teams and find the right group to collaborate
+            with.
+          </p>
+        </div>
+      </section>
+
       {/* Departments Grid */}
       <section className="py-20 section-reveal ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {departments.map((dept) => (
-              <div
-                key={dept.id}
-                className="value-card bg-gray-800 rounded-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 border border-gray-700 cursor-pointer"
-              >
-                <div className="h-48 relative overflow-hidden">
-                  <img
-                    src={dept.image}
-                    alt={dept.name}
-                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-4 left-4 text-4xl">
-                    {dept.icon}
-                  </div>
-                  <div className="absolute top-4 right-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm font-semibold">
-                    {dept.teamSize}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold text-white mb-3 font-['Montserrat']">
-                    {dept.name}
-                  </h3>
-                  <p className="text-gray-300 mb-4">{dept.description}</p>
-                  <p className="text-gray-400 text-sm mb-4">
-                    Manager: {dept.manager}
-                  </p>
-
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-[#D4AF37] mb-2 uppercase tracking-wide">
-                      Specialties
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {dept.specialties.map((specialty, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center text-sm text-gray-300"
-                        >
-                          <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full mr-2"></div>
-                          {specialty}
-                        </div>
-                      ))}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-gray-800 rounded-xl h-96 animate-pulse"
+                ></div>
+              ))}
+            </div>
+          ) : departments.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {departments.map((dept) => (
+                <div
+                  key={dept.id}
+                  className="group value-card bg-gray-800/90 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-700/70 h-full flex flex-col hover:-translate-y-1 focus-within:-translate-y-1"
+                >
+                  <div className="relative h-48 overflow-hidden flex-shrink-0">
+                    <img
+                      src={
+                        dept.image ||
+                        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&h=600&fit=crop"
+                      }
+                      alt={dept.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                    <div className="absolute top-4 left-4 text-3xl sm:text-4xl drop-shadow">
+                      {dept.icon || "🏢"}
+                    </div>
+                    <div className="absolute top-4 right-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-xs sm:text-sm font-semibold shadow">
+                      {dept.numberOfMembers} Members
                     </div>
                   </div>
+                  <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-3 font-['Montserrat'] tracking-tight">
+                        {dept.name}
+                      </h3>
+                    </div>
 
-                  <button
-                    className="w-full bg-[#D4AF37] text-black py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors"
-                    onClick={() => handleTelegramClick(dept.telegramLink)}
-                  >
-                    Meet the Team
-                  </button>
+                    <div className="flex-1">
+                      <p className="text-gray-300/90 text-sm sm:text-base mb-4 leading-relaxed">
+                        {dept.description}
+                      </p>
+                      {dept.manager && (
+                        <p className="text-gray-400 text-sm mb-4 flex items-center gap-2">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-gray-200 text-xs font-semibold">
+                            {String(dept.manager).charAt(0).toUpperCase() ||
+                              "M"}
+                          </span>
+                          <span>Manager: {dept.manager}</span>
+                        </p>
+                      )}
+
+                      {dept.specialties && dept.specialties.length > 0 && (
+                        <div className="mb-3">
+                          <h4 className="text-xs sm:text-sm font-semibold text-[#D4AF37] mb-2 uppercase tracking-wide">
+                            Specialties
+                          </h4>
+                          <div className="grid grid-cols-2 gap-2">
+                            {dept.specialties.map((specialty, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center text-xs sm:text-sm text-gray-300"
+                              >
+                                <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full mr-2"></div>
+                                {specialty}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-5 sm:mt-6">
+                      {dept.telegramLink ? (
+                        <button
+                          className="w-full bg-[#D4AF37] text-black py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-all shadow-sm hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-gray-900"
+                          onClick={() => handleTelegramClick(dept.telegramLink)}
+                          aria-label={`Open Telegram group for ${dept.name}`}
+                        >
+                          <span className="inline-flex items-center gap-2">
+                            Meet the Team
+                            <span aria-hidden>↗</span>
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          className="w-full py-3 rounded-lg opacity-0 pointer-events-none"
+                          aria-hidden="true"
+                          tabIndex={-1}
+                        >
+                          Placeholder
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🏢</div>
+              <h3 className="text-2xl font-semibold text-white mb-4">
+                No Departments Yet
+              </h3>
+              <p className="text-gray-400 text-lg">
+                Departments will appear here once they are created by the admin.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -539,22 +529,25 @@ const Departments = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            {departments.map((dept) => (
+            {departments.slice(0, 5).map((dept) => (
               <div
                 key={dept.id}
                 className="text-center p-4 bg-gray-800 rounded-xl"
               >
-                <div className="text-4xl mb-4">{dept.icon}</div>
+                <div className="text-4xl mb-4">{dept.icon || "🏢"}</div>
                 <h3 className="text-lg font-semibold text-white mb-2 font-['Montserrat']">
                   {dept.name}
                 </h3>
-                <p className="text-sm text-gray-400 mb-3">{dept.teamSize}</p>
+                <p className="text-sm text-gray-400 mb-3">
+                  {dept.numberOfMembers} Members
+                </p>
                 <div className="text-xs text-gray-500">
-                  {dept.specialties.slice(0, 2).map((specialty, index) => (
-                    <div key={index} className="mb-1">
-                      {specialty}
-                    </div>
-                  ))}
+                  {dept.specialties &&
+                    dept.specialties.slice(0, 2).map((specialty, index) => (
+                      <div key={index} className="mb-1">
+                        {specialty}
+                      </div>
+                    ))}
                 </div>
               </div>
             ))}

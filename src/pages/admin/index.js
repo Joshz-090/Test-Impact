@@ -4,5 +4,6 @@ export { default as Subscribers } from "./Subscribers";
 export { default as Admins } from "./Admins";
 export { default as Unauthorized } from "./Unauthorized";
 export { default as Bootstrap } from "./Bootstrap";
-
-
+export { default as AdminEvents } from "./AdminEvents";
+export { default as AdminDepartments } from "./AdminDepartments";
+export { default as AdminAddMember } from "./AdminAddMember";

@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { collection, addDoc, query, where, getDocs, limit } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  limit,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 const Footer = () => {
@@ -42,7 +49,10 @@ const Footer = () => {
         const existingSubscribers = await getDocs(q);
         isDuplicate = !existingSubscribers.empty;
       } catch (checkError) {
-        console.warn("Could not check for duplicates due to permissions:", checkError);
+        console.warn(
+          "Could not check for duplicates due to permissions:",
+          checkError
+        );
         // Continue with subscription attempt
       }
 
@@ -56,19 +66,28 @@ const Footer = () => {
       await addDoc(collection(db, "subscribers"), {
         email: email.trim().toLowerCase(),
         subscribedAt: new Date(),
-        status: "active"
+        status: "active",
       });
 
       setEmail("");
-      showMessage("Successfully subscribed! Thank you for joining us.", "success");
+      showMessage(
+        "Successfully subscribed! Thank you for joining us.",
+        "success"
+      );
     } catch (error) {
       console.error("Subscription error:", error);
-      
+
       // Provide more specific error messages
-      if (error.code === 'permission-denied') {
-        showMessage("Subscription service temporarily unavailable. Please contact support.", "error");
-      } else if (error.code === 'unavailable') {
-        showMessage("Network error. Please check your connection and try again.", "error");
+      if (error.code === "permission-denied") {
+        showMessage(
+          "Subscription service temporarily unavailable. Please contact support.",
+          "error"
+        );
+      } else if (error.code === "unavailable") {
+        showMessage(
+          "Network error. Please check your connection and try again.",
+          "error"
+        );
       } else {
         showMessage("Failed to subscribe. Please try again later.", "error");
       }
@@ -158,22 +177,21 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2 text-sm sm:text-base">
               {[
-                { href: "/learnmore/art", text: "Art & Exhibition Creation" },
                 {
-                  href: "/learnmore/event",
-                  text: "Event Organization & Branding",
+                  href: "/learnmore/graphic-digital",
+                  text: "Graphic Design & Digital Marketing",
                 },
                 {
-                  href: "/learnmore/graphic",
-                  text: "Graphic Design & Content Creation",
+                  href: "/learnmore/events-exhibitions",
+                  text: "Event Organizing & Exhibitions",
                 },
-                { href: "/learnmore/digital", text: "Digital Marketing" },
-                { href: "/learnmore/web", text: "Website & App Development" },
+                { href: "/learnmore/art-department", text: "Art Department" },
                 {
-                  href: "/learnmore/arc",
-                  text: "Architectural & Interior Design",
+                  href: "/learnmore/construction-architecture",
+                  text: "Construction & Architectural Design",
                 },
-                { href: "/learnmore/edu", text: "School Outreach & Education" },
+                { href: "/learnmore/it-web", text: "IT & Website Development" },
+                { href: "/learnmore/media-printing", text: "Media & Printing" },
               ].map((item, index) => (
                 <motion.li
                   key={index}
@@ -273,7 +291,6 @@ const Footer = () => {
           </motion.div>
         </motion.div>
 
-        
         <motion.div
           className="border-t border-gray-800 mt-12 pt-8"
           initial={{ opacity: 0, y: 20 }}
@@ -287,7 +304,10 @@ const Footer = () => {
             <p className="text-gray-300 text-sm sm:text-base">
               Subscribe to our newsletter for the latest updates and events
             </p>
-            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
+            >
               <motion.input
                 type="email"
                 value={email}
@@ -303,16 +323,20 @@ const Footer = () => {
                 type="submit"
                 disabled={isLoading}
                 className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={!isLoading ? {
-                  scale: 1.05,
-                  boxShadow: "0 0 15px rgba(212, 175, 55, 0.5)",
-                } : {}}
+                whileHover={
+                  !isLoading
+                    ? {
+                        scale: 1.05,
+                        boxShadow: "0 0 15px rgba(212, 175, 55, 0.5)",
+                      }
+                    : {}
+                }
                 whileTap={!isLoading ? { scale: 0.95 } : {}}
               >
                 {isLoading ? "Please wait..." : "Subscribe"}
               </motion.button>
             </form>
-            
+
             {/* Message Display */}
             {message && (
               <motion.div
@@ -320,8 +344,8 @@ const Footer = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 className={`mt-4 p-3 rounded-lg text-sm text-center max-w-md mx-auto ${
-                  messageType === "success" 
-                    ? "bg-green-900/20 text-green-300 border border-green-500/30" 
+                  messageType === "success"
+                    ? "bg-green-900/20 text-green-300 border border-green-500/30"
                     : messageType === "error"
                     ? "bg-red-900/20 text-red-300 border border-red-500/30"
                     : "bg-gray-800/50 text-gray-300"

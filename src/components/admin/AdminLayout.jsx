@@ -9,6 +9,15 @@ export default function AdminLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [sidebarMinimized, setSidebarMinimized] = useState(() => {
+    try {
+      const stored = localStorage.getItem("admin_sidebar_minimized");
+      return stored === "true";
+    } catch {
+      /* ignore localStorage errors (e.g., privacy modes) */
+      return false;
+    }
+  });
 
   // Handle window resize
   useEffect(() => {
@@ -17,6 +26,9 @@ export default function AdminLayout() {
       setIsMobile(mobile);
       if (!mobile) {
         setSidebarOpen(false);
+      } else {
+        // On mobile, don't allow minimized state
+        setSidebarMinimized(false);
       }
     };
 
@@ -39,10 +51,25 @@ export default function AdminLayout() {
     }
   };
 
+  const toggleSidebarMinimize = () => {
+    setSidebarMinimized((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("admin_sidebar_minimized", String(next));
+      } catch {
+        /* ignore localStorage errors */
+      }
+      return next;
+    });
+  };
+
   const navigationItems = [
     { to: "/admin", label: "Dashboard", icon: "📊", end: true },
     { to: "/admin/subscribers", label: "Subscribers", icon: "👥", end: false },
     { to: "/admin/projects", label: "Projects", icon: "📂", end: false },
+    { to: "/admin/events", label: "Events", icon: "🎉", end: false },
+    { to: "/admin/departments", label: "Departments", icon: "🏢", end: false },
+    { to: "/admin/members", label: "Members", icon: "👤", end: false },
     ...(role === "super"
       ? [{ to: "/admin/admins", label: "Admins", icon: "🔐", end: false }]
       : []),
@@ -57,17 +84,28 @@ export default function AdminLayout() {
           isActive
             ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-        }`
+        } ${sidebarMinimized ? "justify-center px-2" : ""}`
       }
+      title={sidebarMinimized ? item.label : ""}
     >
-      <span className="text-lg mr-3" aria-hidden="true">
+      <span className="text-lg" aria-hidden="true">
         {item.icon}
       </span>
-      {item.label}
-      {item.to === "/admin/admins" && role === "super" && (
-        <span className="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
-          Super
-        </span>
+      {!sidebarMinimized && (
+        <>
+          <span
+            className={`ml-3 transition-opacity duration-200 ${
+              sidebarMinimized ? "opacity-0 w-0" : "opacity-100"
+            }`}
+          >
+            {item.label}
+          </span>
+          {item.to === "/admin/admins" && role === "super" && (
+            <span className="ml-auto bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+              Super
+            </span>
+          )}
+        </>
       )}
     </NavLink>
   );
@@ -82,11 +120,12 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Mobile menu button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
         className="fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-lg md:hidden"
         aria-label="Toggle sidebar"
+        aria-expanded={sidebarOpen}
+        aria-controls="admin-sidebar"
       >
         <svg
           className="h-6 w-6"
@@ -118,82 +157,175 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:flex-col
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-      `}
+    fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out md:sticky md:top-0 md:flex md:flex-col md:translate-x-0
+    ${sidebarOpen || !isMobile ? "translate-x-0" : "-translate-x-full"}
+    ${sidebarMinimized ? "w-16" : "w-64"}
+    h-screen overflow-y-auto
+  `}
+        style={{ height: "100vh" }}
+        id="admin-sidebar"
+        role="complementary"
+        aria-label="Admin sidebar"
       >
         {/* Header */}
-        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
-          <Link to="/admin" className="flex items-center space-x-2">
-            <span className="text-2xl">⚡</span>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Admin Panel
-            </span>
-          </Link>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="p-1 rounded-md hover:bg-gray-100 md:hidden"
-            aria-label="Close sidebar"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div
+          className={`h-12 flex items-center ${
+            sidebarMinimized ? "justify-center px-2" : "justify-between px-6"
+          } border-b border-gray-200`}
+        >
+          {!sidebarMinimized ? (
+            <>
+              <Link to="/admin" className="flex items-center space-x-2">
+                <span className="text-2xl">⚡</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Admin Panel
+                </span>
+              </Link>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="p-1 rounded-md hover:bg-gray-100 md:hidden"
+                aria-label="Close sidebar"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/admin"
+              className="flex items-center justify-center"
+              title="Admin Panel"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+              <span className="text-2xl">⚡</span>
+            </Link>
+          )}
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <nav
+          className={`flex-1 py-3 space-y-1 overflow-y-auto ${
+            sidebarMinimized ? "px-2" : "px-4"
+          }`}
+        >
           {navigationItems.map((item) => (
             <NavItem key={item.to} item={item} />
           ))}
         </nav>
 
         {/* User Info & Sign Out */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                {currentUser?.email?.charAt(0).toUpperCase() || "A"}
+        <div
+          className={`border-t border-gray-200 ${
+            sidebarMinimized ? "p-2" : "p-3"
+          }`}
+        >
+          {!sidebarMinimized ? (
+            <>
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="flex-shrink-0">
+                  <div className="h-9 w-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                    {currentUser?.email?.charAt(0).toUpperCase() || "A"}
+                  </div>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {currentUser?.email}
+                  </p>
+                  <p className="text-xs text-gray-500 capitalize">
+                    {role} Admin
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {currentUser?.email}
-              </p>
-              <p className="text-xs text-gray-500 capitalize">{role} Admin</p>
-            </div>
-          </div>
 
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            <span>Sign Out</span>
-          </button>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center justify-center space-x-2 px-3 py-1 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                <span>Sign Out</span>
+              </button>
+            </>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex justify-center">
+                <div className="h-9 w-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                  {currentUser?.email?.charAt(0).toUpperCase() || "A"}
+                </div>
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center justify-center p-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors duration-200"
+                title="Sign Out"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* Minimize Button */}
+        {!isMobile && (
+          <div className="border-t border-gray-200 p-1">
+            <button
+              onClick={toggleSidebarMinimize}
+              className="w-full flex items-center justify-center p-1 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+              title={sidebarMinimized ? "Expand sidebar" : "Minimize sidebar"}
+            >
+              <svg
+                className={`h-5 w-5 transform transition-transform duration-200 ${
+                  sidebarMinimized ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={sidebarMinimized ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"}
+                />
+              </svg>
+              {!sidebarMinimized && (
+                <span className="ml-2 text-sm">Minimize</span>
+              )}
+            </button>
+          </div>
+        )}
       </aside>
 
       {/* Main Content */}
@@ -230,57 +362,117 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        {/* Breadcrumb for larger screens */}
-        <div className="hidden md:block bg-white border-b">
-          <div className="px-8 py-4">
-            <nav className="flex" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2">
-                <li>
-                  <Link
-                    to="/admin"
-                    className="text-gray-400 hover:text-gray-500"
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+        {/* Desktop Minimize Button in header when sidebar is minimized */}
+        {!isMobile && sidebarMinimized && (
+          <div className="hidden md:block bg-white border-b">
+            <div className="px-8 py-4 flex items-center justify-between">
+              <nav className="flex" aria-label="Breadcrumb">
+                <ol className="flex items-center space-x-2">
+                  <li>
+                    <Link
+                      to="/admin"
+                      className="text-gray-400 hover:text-gray-500"
                     >
-                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                  </Link>
-                </li>
-                <li>
-                  <span className="text-gray-400">/</span>
-                </li>
-                <li>
-                  <span className="text-gray-900 font-medium">
-                    {navigationItems.find(
-                      (item) =>
-                        item.to === location.pathname ||
-                        (item.to !== "/admin" &&
-                          location.pathname.startsWith(item.to))
-                    )?.label || "Dashboard"}
-                  </span>
-                </li>
-              </ol>
-            </nav>
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                      </svg>
+                    </Link>
+                  </li>
+                  <li>
+                    <span className="text-gray-400">/</span>
+                  </li>
+                  <li>
+                    <span className="text-gray-900 font-medium">
+                      {navigationItems.find(
+                        (item) =>
+                          item.to === location.pathname ||
+                          (item.to !== "/admin" &&
+                            location.pathname.startsWith(item.to))
+                      )?.label || "Dashboard"}
+                    </span>
+                  </li>
+                </ol>
+              </nav>
+              <button
+                onClick={toggleSidebarMinimize}
+                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                title="Expand sidebar"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Breadcrumb for larger screens when sidebar is not minimized */}
+        {!isMobile && !sidebarMinimized && (
+          <div className="hidden md:block bg-white border-b">
+            <div className="px-8 py-4">
+              <nav className="flex" aria-label="Breadcrumb">
+                <ol className="flex items-center space-x-2">
+                  <li>
+                    <Link
+                      to="/admin"
+                      className="text-gray-400 hover:text-gray-500"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                      </svg>
+                    </Link>
+                  </li>
+                  <li>
+                    <span className="text-gray-400">/</span>
+                  </li>
+                  <li>
+                    <span className="text-gray-900 font-medium">
+                      {navigationItems.find(
+                        (item) =>
+                          item.to === location.pathname ||
+                          (item.to !== "/admin" &&
+                            location.pathname.startsWith(item.to))
+                      )?.label || "Dashboard"}
+                    </span>
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        )}
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-auto">
-          <div className="p-4 md:p-8">
+        <main className="flex-1 min-h-0">
+          <div className="p-4 md:p-8 min-h-full">
             <Outlet />
           </div>
-        </main>
 
-        {/* Footer */}
-        <footer className="bg-white border-t px-8 py-4 hidden md:block">
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>© {new Date().getFullYear()} Admin Panel</span>
-            <span>Logged in as {currentUser?.email}</span>
-          </div>
-        </footer>
+          {/* Footer */}
+          <footer className="bg-white border-t px-8 py-4 hidden md:block mt-auto">
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <span>© {new Date().getFullYear()} Admin Panel</span>
+              <span>Logged in as {currentUser?.email}</span>
+            </div>
+          </footer>
+        </main>
       </div>
     </div>
   );

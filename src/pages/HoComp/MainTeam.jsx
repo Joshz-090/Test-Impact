@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import ErrorBoundary from "../../components/ErrorBoundary";
-import img from "../../assets/images/R/images.png"; // Replace with real images from PDF
+import img from "../../assets/images/R/images.png";
 import sosina from "../../assets/images/members/Sosina.png";
 import kalkidan from "../../assets/images/members/kalkidan.png";
 import Lijeshet from "../../assets/images/members/Lijeshet.png";
@@ -262,7 +262,6 @@ const MainTeam = () => {
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {[
               "all",
-              "executive",
               "design",
               "creative",
               "technology",

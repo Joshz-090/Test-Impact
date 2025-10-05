@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { db } from "../firebase";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaLinkedin,
@@ -15,276 +17,57 @@ const Team = () => {
   const [activeFilter, setActiveFilter] = useState("All Departments");
   const [visibleMembers, setVisibleMembers] = useState(8);
   const [isLoading, setIsLoading] = useState(true);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [departments, setDepartments] = useState(["All Departments"]);
 
-  // Departments
-  const departments = [
-    "All Departments",
-    "Event Organizing",
-    "Design and Marketing",
-    "Art",
-    "Construction",
-    "IT",
-  ];
+  // Load members from Firestore and derive departments
+  useEffect(() => {
+    const q = query(collection(db, "members"), orderBy("timestamp", "desc"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => {
+          const d = doc.data();
+          const social = {
+            linkedin: d?.contacts?.linkedin || "",
+            twitter: d?.contacts?.twitter || "",
+            instagram: d?.contacts?.instagram || "",
+            github: d?.contacts?.github || "",
+            behance: d?.contacts?.behance || "",
+            pinterest: d?.contacts?.pinterest || "",
+            portfolio: d?.contacts?.website || d?.contacts?.email || "",
+          };
+          Object.keys(social).forEach((k) => {
+            if (!social[k]) delete social[k];
+          });
 
-  // Team data
-  const teamMembers = [
-    // Event Organizing Department
-    {
-      id: 1,
-      name: "Emily Rodriguez",
-      title: "Event Director",
-      bio: "Experienced event planner specializing in creative event concepts and flawless execution.",
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-      department: "Event Organizing",
-      experience: "10+ Years",
-      isLeader: true,
-      social: { linkedin: "#", twitter: "#", instagram: "#" },
-    },
-    {
-      id: 2,
-      name: "Marcus Johnson",
-      title: "Senior Event Coordinator",
-      bio: "Specializes in corporate events and large-scale productions with meticulous attention to detail.",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      department: "Event Organizing",
-      experience: "8+ Years",
-      social: { linkedin: "#", twitter: "#" },
-    },
-    {
-      id: 3,
-      name: "Sophia Williams",
-      title: "Venue Manager",
-      bio: "Expert in venue selection, logistics, and vendor coordination for events of all sizes.",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
-      department: "Event Organizing",
-      experience: "7+ Years",
-      social: { linkedin: "#", instagram: "#" },
-    },
-    {
-      id: 4,
-      name: "Daniel Lee",
-      title: "Event Production Specialist",
-      bio: "Technical production expert with background in audio-visual coordination and stage design.",
-      image:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face",
-      department: "Event Organizing",
-      experience: "6+ Years",
-      social: { linkedin: "#", portfolio: "#" },
-    },
-    {
-      id: 5,
-      name: "Olivia Martinez",
-      title: "Client Relations Manager",
-      bio: "Builds and maintains client relationships, ensuring their vision is realized in every event.",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
-      department: "Event Organizing",
-      experience: "9+ Years",
-      social: { linkedin: "#", twitter: "#" },
-    },
+          return {
+            id: doc.id,
+            name: d?.name || "",
+            title: d?.role || "",
+            bio: d?.description || "",
+            image: d?.photoURL || "",
+            department: d?.department || "",
+            experience: d?.experience || "",
+            isLeader: !!d?.isLeader,
+            social,
+          };
+        });
 
-    // Design and Marketing Department
-    {
-      id: 6,
-      name: "Sarah Johnson",
-      title: "Creative Director & Founder",
-      bio: "Visionary leader with 15+ years of experience in creative direction and brand strategy.",
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
-      department: "Design and Marketing",
-      experience: "15+ Years",
-      isLeader: true,
-      social: { linkedin: "#", twitter: "#", instagram: "#", portfolio: "#" },
-    },
-    {
-      id: 7,
-      name: "Alex Martinez",
-      title: "Marketing Manager",
-      bio: "Strategic marketing professional with expertise in digital campaigns and brand development.",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
-      department: "Design and Marketing",
-      experience: "9+ Years",
-      social: { linkedin: "#", twitter: "#", instagram: "#" },
-    },
-    {
-      id: 8,
-      name: "Rachel Green",
-      title: "Senior Designer",
-      bio: "Versatile designer specializing in brand identity and visual communication.",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
-      department: "Design and Marketing",
-      experience: "7+ Years",
-      social: { linkedin: "#", behance: "#", instagram: "#" },
-    },
-    {
-      id: 9,
-      name: "Thomas Wright",
-      title: "Digital Marketing Specialist",
-      bio: "Expert in SEO, SEM, and social media marketing strategies that drive engagement.",
-      image:
-        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=400&fit=crop&crop=face",
-      department: "Design and Marketing",
-      experience: "5+ Years",
-      social: { linkedin: "#", twitter: "#" },
-    },
-    {
-      id: 10,
-      name: "Jessica Kim",
-      title: "Content Strategist",
-      bio: "Creates compelling content strategies that resonate with target audiences and drive conversions.",
-      image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=400&fit=crop&crop=face",
-      department: "Design and Marketing",
-      experience: "6+ Years",
-      social: { linkedin: "#", twitter: "#", portfolio: "#" },
-    },
-
-    // Art Department
-    {
-      id: 11,
-      name: "Michael Chen",
-      title: "Art Director",
-      bio: "Passionate artist and curator with expertise in contemporary art and exhibition design.",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-      department: "Art",
-      experience: "12+ Years",
-      isLeader: true,
-      social: { linkedin: "#", twitter: "#", instagram: "#" },
-    },
-    {
-      id: 12,
-      name: "Elena Rodriguez",
-      title: "Senior Artist",
-      bio: "Specializes in mixed media and large-scale installations for corporate and public spaces.",
-      image:
-        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop&crop=face",
-      department: "Art",
-      experience: "10+ Years",
-      social: { linkedin: "#", instagram: "#", portfolio: "#" },
-    },
-    {
-      id: 13,
-      name: "Carlos Mendez",
-      title: "Visual Designer",
-      bio: "Creates compelling visual narratives through illustration, typography, and digital media.",
-      image:
-        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face",
-      department: "Art",
-      experience: "8+ Years",
-      social: { linkedin: "#", behance: "#" },
-    },
-    {
-      id: 14,
-      name: "Nina Patel",
-      title: "Art Restoration Specialist",
-      bio: "Expert in preserving and restoring artworks with traditional and modern techniques.",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face",
-      department: "Art",
-      experience: "9+ Years",
-      social: { linkedin: "#", portfolio: "#" },
-    },
-
-    // Construction Department
-    {
-      id: 15,
-      name: "Lisa Thompson",
-      title: "Interior Designer",
-      bio: "Creative interior designer with a passion for sustainable design and innovative space solutions.",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
-      department: "Construction",
-      experience: "11+ Years",
-      isLeader: true,
-      social: { linkedin: "#", instagram: "#", pinterest: "#" },
-    },
-    {
-      id: 16,
-      name: "James Wilson",
-      title: "Project Manager",
-      bio: "Experienced project manager ensuring smooth delivery of complex creative projects.",
-      image:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face",
-      department: "Construction",
-      experience: "13+ Years",
-      social: { linkedin: "#", twitter: "#" },
-    },
-    {
-      id: 17,
-      name: "Robert Kim",
-      title: "Structural Engineer",
-      bio: "Specializes in creating structurally sound yet aesthetically pleasing installations.",
-      image:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face",
-      department: "Construction",
-      experience: "10+ Years",
-      social: { linkedin: "#", portfolio: "#" },
-    },
-    {
-      id: 18,
-      name: "Amanda Lewis",
-      title: "Site Supervisor",
-      bio: "Oversees on-site operations ensuring safety, quality, and timely completion of projects.",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
-      department: "Construction",
-      experience: "8+ Years",
-      social: { linkedin: "#" },
-    },
-
-    // IT Department
-    {
-      id: 19,
-      name: "David Kim",
-      title: "Lead Developer",
-      bio: "Full-stack developer with expertise in modern web technologies and innovative digital solutions.",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      department: "IT",
-      experience: "8+ Years",
-      isLeader: true,
-      social: { linkedin: "#", github: "#", twitter: "#" },
-    },
-    {
-      id: 20,
-      name: "Priya Sharma",
-      title: "UX/UI Designer",
-      bio: "Creates intuitive user experiences and visually appealing interfaces for digital products.",
-      image:
-        "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&h=400&fit=crop&crop=face",
-      department: "IT",
-      experience: "6+ Years",
-      social: { linkedin: "#", behance: "#", dribbble: "#" },
-    },
-    {
-      id: 21,
-      name: "Brian Taylor",
-      title: "Systems Administrator",
-      bio: "Manages IT infrastructure and ensures seamless operation of all technical systems.",
-      image:
-        "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=400&fit=crop&crop=face",
-      department: "IT",
-      experience: "7+ Years",
-      social: { linkedin: "#", github: "#" },
-    },
-    {
-      id: 22,
-      name: "Michelle Wong",
-      title: "Data Analyst",
-      bio: "Transforms complex data into actionable insights to drive business decisions.",
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop&crop=face",
-      department: "IT",
-      experience: "5+ Years",
-      social: { linkedin: "#", twitter: "#" },
-    },
-  ];
+        setTeamMembers(data);
+        const uniqueDepts = Array.from(
+          new Set(data.map((m) => m.department).filter(Boolean))
+        );
+        setDepartments(["All Departments", ...uniqueDepts]);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error loading members:", error);
+        setIsLoading(false);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
 
   // Filter members based on active filter
   const filteredMembers =
@@ -307,35 +90,47 @@ const Team = () => {
     setVisibleMembers((prev) => prev + 8);
   };
 
-  // Animation variants
+  // Enhanced Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0, scale: 0.9 },
     visible: {
       y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      y: -20,
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        duration: 0.3,
       },
     },
   };
 
   const buttonVariants = {
-    initial: { scale: 1 },
+    initial: { scale: 1, y: 0 },
     hover: {
       scale: 1.05,
-      transition: { duration: 0.2 },
+      y: -2,
+      transition: { duration: 0.2, ease: "easeOut" },
     },
-    tap: { scale: 0.95 },
+    tap: { scale: 0.95, y: 0 },
   };
 
   // Simulate loading
@@ -347,7 +142,7 @@ const Team = () => {
   }, []);
 
   // Render social icon based on platform
-  const renderSocialIcon = (platform, url) => {
+  const renderSocialIcon = (platform) => {
     const iconProps = { className: "w-4 h-4" };
 
     switch (platform) {
@@ -374,69 +169,115 @@ const Team = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#010120] to-[#111130] text-white font-sans overflow-hidden">
       {/* Header Section */}
       <HeaderSection />
-      <section className="relative py-20 bg-gradient-to-br from-[#111130] to-[#212140] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="absolute top-0 right-0 -mr-40 mt-10 opacity-10">
-          <svg
-            width="400"
-            height="400"
-            viewBox="0 0 400 400"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M200 0C89.543 0 0 89.543 0 200C0 310.457 89.543 400 200 400C310.457 400 400 310.457 400 200C400 89.543 310.457 0 200 0Z"
-              fill="#D4AF37"
-            />
-          </svg>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            {departments.map((dept) => (
-              <motion.button
-                key={dept}
-                onClick={() => {
-                  setActiveFilter(dept);
-                  setVisibleMembers(8);
-                }}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                  activeFilter === dept
-                    ? "bg-[#D4AF37] text-black shadow-lg"
-                    : "bg-white bg-opacity-10 text-white hover:bg-opacity-20 backdrop-blur-sm"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {dept} ({departmentCounts[dept]})
-              </motion.button>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Team Grid Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+      <section className="relative py-24 bg-white overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Subtle geometric patterns */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/5 to-transparent rounded-full blur-xl"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-[#D4AF37]/8 to-transparent rounded-full blur-lg"></div>
+          <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-gradient-to-br from-[#D4AF37]/3 to-transparent rounded-full blur-2xl"></div>
+          <div className="absolute bottom-40 right-1/3 w-28 h-28 bg-gradient-to-br from-[#D4AF37]/6 to-transparent rounded-full blur-lg"></div>
+
+          {/* Subtle grid pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, #D4AF37 1px, transparent 0)`,
+              backgroundSize: "20px 20px",
+            }}
+          ></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Enhanced Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl font-bold text-center text-black mb-16 font-montserrat"
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
           >
-            {activeFilter} <span className="text-[#D4AF37]">Team</span>
-          </motion.h2>
+            <div className="inline-block mb-4">
+              <span className="text-sm font-semibold text-[#D4AF37] uppercase tracking-wider bg-[#D4AF37]/10 px-4 py-2 rounded-full">
+                Our Amazing Team
+              </span>
+            </div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-montserrat"
+            >
+              Meet Our{" "}
+              <span className="text-[#D4AF37] relative">
+                {activeFilter} Team
+                <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] rounded-full"></div>
+              </span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+            >
+              Discover the talented individuals who bring creativity, expertise,
+              and passion to every project we undertake.
+            </motion.p>
+          </motion.div>
+
+          <section className="relative py-20 text-black overflow-hidden">
+            <div className="absolute inset-0"></div>
+            <div className="absolute top-0 right-0 -mr-40 mt-10 opacity-10">
+              <svg
+                width="400"
+                height="400"
+                viewBox="0 0 400 400"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M200 0C89.543 0 0 89.543 0 200C0 310.457 89.543 400 200 400C310.457 400 400 310.457 400 200C400 89.543 310.457 0 200 0Z"
+                  fill="#D4AF37"
+                />
+              </svg>
+            </div>
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-black">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-wrap justify-center gap-4"
+              >
+                {departments.map((dept) => (
+                  <motion.button
+                    key={dept}
+                    onClick={() => {
+                      setActiveFilter(dept);
+                      setVisibleMembers(8);
+                    }}
+                    className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all text-black ${
+                      activeFilter === dept
+                        ? "bg-[#D4AF37] text-black shadow-lg"
+                        : "bg-white bg-opacity-10 text-black hover:bg-opacity-20 backdrop-blur-sm"
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {dept} ({departmentCounts[dept]})
+                  </motion.button>
+                ))}
+              </motion.div>
+            </div>
+          </section>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-gray-100 rounded-xl h-96 animate-pulse"
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl h-[500px] animate-pulse shadow-lg"
                 ></div>
               ))}
             </div>
@@ -446,7 +287,7 @@ const Team = () => {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
               >
                 <AnimatePresence>
                   {filteredMembers.slice(0, visibleMembers).map((member) => (
@@ -454,57 +295,112 @@ const Team = () => {
                       key={member.id}
                       variants={itemVariants}
                       layout
-                      className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-[#D4AF37]/20 hover:-translate-y-2"
                     >
-                      <div className="relative overflow-hidden">
+                      {/* Enhanced Image Container */}
+                      <div className="relative overflow-hidden h-72">
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
-                        <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-xs font-semibold">
-                          {member.experience}
-                        </div>
-                        {member.isLeader && (
-                          <div className="absolute top-4 right-4 bg-black text-[#D4AF37] px-3 py-1 rounded-full text-xs font-bold">
-                            Team Lead
-                          </div>
+
+                        {/* Enhanced Overlay Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                        {/* Enhanced Badges */}
+                        {member.experience && (
+                          <motion.div
+                            className="absolute top-4 left-4 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-black px-4 py-2 rounded-full text-xs font-bold shadow-lg"
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            {member.experience}
+                          </motion.div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                          <h3 className="text-white font-semibold text-lg">
+                        {member.isLeader && (
+                          <motion.div
+                            className="absolute top-4 right-4 bg-gradient-to-r from-gray-900 to-black text-[#D4AF37] px-4 py-2 rounded-full text-xs font-bold shadow-lg"
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            👑 Team Lead
+                          </motion.div>
+                        )}
+
+                        {/* Enhanced Name Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                          <motion.h3
+                            className="text-white font-bold text-xl mb-1"
+                            whileHover={{ x: 5 }}
+                          >
                             {member.name}
-                          </h3>
-                          <p className="text-[#D4AF37] text-sm">
+                          </motion.h3>
+                          <p className="text-[#D4AF37] text-sm font-medium">
                             {member.title}
                           </p>
                         </div>
+
+                        {/* Hover Effect Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
 
-                      <div className="p-6">
-                        <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                      {/* Enhanced Content Section */}
+                      <div className="p-6 bg-gradient-to-br from-white to-gray-50">
+                        <p className="text-gray-600 text-sm mb-6 leading-relaxed line-clamp-3">
                           {member.bio}
                         </p>
 
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        {/* Enhanced Department Badge */}
+                        <div className="flex items-center justify-between mb-6">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 uppercase tracking-wide">
+                            <div className="w-2 h-2 bg-[#D4AF37] rounded-full mr-2"></div>
                             {member.department}
                           </span>
                         </div>
 
+                        {/* Enhanced Social Media Section */}
                         <div className="flex space-x-3">
-                          {Object.entries(member.social).map(
-                            ([platform, url]) => (
+                          {(() => {
+                            const prioritizedPlatforms = [
+                              "linkedin",
+                              "twitter",
+                              "instagram",
+                              "portfolio",
+                            ];
+
+                            const availablePlatforms = Object.keys(
+                              member.social
+                            );
+                            const displayPlatforms = prioritizedPlatforms
+                              .filter((platform) =>
+                                availablePlatforms.includes(platform)
+                              )
+                              .slice(0, 4);
+
+                            if (displayPlatforms.length < 4) {
+                              const remainingPlatforms = availablePlatforms
+                                .filter(
+                                  (platform) =>
+                                    !displayPlatforms.includes(platform)
+                                )
+                                .slice(0, 4 - displayPlatforms.length);
+                              displayPlatforms.push(...remainingPlatforms);
+                            }
+
+                            return displayPlatforms.map((platform) => (
                               <motion.a
                                 key={platform}
-                                href={url}
-                                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#D4AF37] hover:text-white transition-colors"
-                                whileHover={{ y: -3 }}
+                                href={member.social[platform]}
+                                className="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-600 hover:from-[#D4AF37] hover:to-[#B8941F] hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg"
+                                whileHover={{ y: -3, scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
                                 aria-label={`${member.name}'s ${platform}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                {renderSocialIcon(platform, url)}
+                                {renderSocialIcon(platform)}
                               </motion.a>
-                            )
-                          )}
+                            ));
+                          })()}
                         </div>
                       </div>
                     </motion.div>
@@ -512,24 +408,39 @@ const Team = () => {
                 </AnimatePresence>
               </motion.div>
 
+              {/* Enhanced Load More Button */}
               {visibleMembers < filteredMembers.length && (
                 <motion.div
-                  className="text-center mt-16"
-                  initial={{ opacity: 0, y: 20 }}
+                  className="text-center mt-20"
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                 >
                   <motion.button
                     onClick={loadMore}
-                    className="px-8 py-3 bg-[#D4AF37] text-black font-semibold rounded-full relative overflow-hidden group"
+                    className="relative px-10 py-4 bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-black font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
                     variants={buttonVariants}
                     whileHover="hover"
                     whileTap="tap"
                   >
-                    <span className="relative z-10">
+                    <span className="relative z-10 flex items-center">
+                      <svg
+                        className="w-5 h-5 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
                       Load More Team Members
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#B8941F] to-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#B8941F] to-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                   </motion.button>
                 </motion.div>
               )}

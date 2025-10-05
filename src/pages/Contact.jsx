@@ -238,7 +238,7 @@ const Contact = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-[#1E1E2F] to-[#F5F5F5] text-white font-sans"
+      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#888888] text-white font-sans"
       ref={containerRef}
     >
       {/* Hero Section */}

@@ -1,123 +1,200 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContextBase";
+import { addEvent, updateEvent } from "../../utils/eventUtils";
+import { uploadImage } from "../../utils/uploadImage";
+import toast from "react-hot-toast";
 
-export default function EventPromotionForm() {
+export default function EventPromotionForm({
+  eventToEdit = null,
+  onEventSaved = null,
+}) {
   const { role } = useAuth();
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    details: "",
-    category: "promotion",
-    eventDate: "",
-    eventTime: "",
-    tags: "",
-    mediaType: "image",
-    imageFile: null,
-    videoFile: null,
-    youtubeLink: "",
+    title: eventToEdit?.title || "",
+    shortDescription: eventToEdit?.shortDescription || "",
+    fullDescription: eventToEdit?.fullDescription || [""],
+    category: eventToEdit?.category || "event",
+    eventDate: eventToEdit?.eventDate || "",
+    eventTime: eventToEdit?.eventTime || "",
+    videoLink: eventToEdit?.videoLink || "",
+    images: eventToEdit?.images || [],
+    location: eventToEdit?.location || "",
+    organizerName: eventToEdit?.organizerName || "",
+    contactLink: eventToEdit?.contactLink || "",
   });
 
-  const [preview, setPreview] = useState({
-    image: null,
-    video: null,
-    youtube: null,
-  });
-
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
 
-  // Auto-dismiss messages
-  const showMessage = (text, type) => {
-    setMessage(text);
-    setMessageType(type);
-    setTimeout(() => {
-      setMessage("");
-      setMessageType("");
-    }, 4000);
-  };
+  // Initialize form with existing event data
+  useEffect(() => {
+    if (eventToEdit) {
+      setFormData({
+        title: eventToEdit.title || "",
+        shortDescription: eventToEdit.shortDescription || "",
+        fullDescription: eventToEdit.fullDescription || [""],
+        category: eventToEdit.category || "event",
+        eventDate: eventToEdit.eventDate || "",
+        eventTime: eventToEdit.eventTime || "",
+        videoLink: eventToEdit.videoLink || "",
+        images: eventToEdit.images || [],
+        location: eventToEdit.location || "",
+        organizerName: eventToEdit.organizerName || "",
+        contactLink: eventToEdit.contactLink || "",
+      });
+      setImageUrls(eventToEdit.images || []);
+    }
+  }, [eventToEdit]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, files } = e.target;
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
+  const handleDescriptionChange = (index, value) => {
+    const newDescriptions = [...formData.fullDescription];
+    newDescriptions[index] = value;
+    setFormData((prev) => ({ ...prev, fullDescription: newDescriptions }));
+  };
+
+  const addDescriptionParagraph = () => {
+    setFormData((prev) => ({
+      ...prev,
+      fullDescription: [...prev.fullDescription, ""],
+    }));
+  };
+
+  const removeDescriptionParagraph = (index) => {
+    if (formData.fullDescription.length > 1) {
+      const newDescriptions = formData.fullDescription.filter(
+        (_, i) => i !== index
+      );
+      setFormData((prev) => ({ ...prev, fullDescription: newDescriptions }));
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setImageFiles((prev) => [...prev, ...files]);
+  };
+
+  const handleImageUrlAdd = () => {
+    const url = prompt("Enter image URL:");
+    if (url && url.trim()) {
+      setImageUrls((prev) => [...prev, url.trim()]);
+    }
+  };
+
+  const removeImage = (index, type) => {
     if (type === "file") {
-      const file = files[0];
-      setFormData((prev) => ({ ...prev, [name]: file }));
-
-      // Create preview
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setPreview((prev) => ({
-            ...prev,
-            [name.replace("File", "")]: e.target.result,
-          }));
-        };
-        reader.readAsDataURL(file);
-      }
+      setImageFiles((prev) => prev.filter((_, i) => i !== index));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setImageUrls((prev) => prev.filter((_, i) => i !== index));
     }
-  };
-
-  const handleYoutubeLinkChange = (e) => {
-    const link = e.target.value;
-    setFormData((prev) => ({ ...prev, youtubeLink: link }));
-
-    // Extract video ID for preview
-    const videoId = extractYouTubeId(link);
-    if (videoId) {
-      setPreview((prev) => ({ ...prev, youtube: videoId }));
-    }
-  };
-
-  const extractYouTubeId = (url) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.title || !formData.shortDescription || !formData.eventDate) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      showMessage(
-        "Event added successfully! (This is a demo - no data was saved)",
-        "success"
-      );
+    try {
+      // Prepare images array
+      const allImages = [...imageUrls];
 
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        details: "",
-        category: "promotion",
-        eventDate: "",
-        eventTime: "",
-        tags: "",
-        mediaType: "image",
-        imageFile: null,
-        videoFile: null,
-        youtubeLink: "",
-      });
-      setPreview({ image: null, video: null, youtube: null });
-    }, 1500);
+      // Upload file images to Cloudinary
+      for (const file of imageFiles) {
+        try {
+          const imageUrl = await uploadImage(file);
+          allImages.push(imageUrl);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          toast.error(`Failed to upload image: ${file.name}`);
+        }
+      }
+
+      const eventData = {
+        ...formData,
+        images: allImages,
+        fullDescription: formData.fullDescription.filter(
+          (desc) => desc.trim() !== ""
+        ),
+      };
+
+      let result;
+      if (eventToEdit) {
+        result = await updateEvent(eventToEdit.id, eventData);
+      } else {
+        result = await addEvent(eventData);
+      }
+
+      if (result.success) {
+        toast.success(
+          eventToEdit
+            ? "Event updated successfully!"
+            : "Event added successfully!"
+        );
+
+        // Reset form
+        setFormData({
+          title: "",
+          shortDescription: "",
+          fullDescription: [""],
+          category: "event",
+          eventDate: "",
+          eventTime: "",
+          videoLink: "",
+          images: [],
+          location: "",
+          organizerName: "",
+          contactLink: "",
+        });
+        setImageFiles([]);
+        setImageUrls([]);
+
+        if (onEventSaved) {
+          onEventSaved();
+        }
+      } else {
+        toast.error(result.error || "Failed to save event");
+      }
+    } catch (error) {
+      console.error("Error saving event:", error);
+      toast.error("An error occurred while saving the event");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const clearMedia = (type) => {
-    setFormData((prev) => ({ ...prev, [`${type}File`]: null }));
-    setPreview((prev) => ({ ...prev, [type]: null }));
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      shortDescription: "",
+      fullDescription: [""],
+      category: "event",
+      eventDate: "",
+      eventTime: "",
+      videoLink: "",
+      images: [],
+      location: "",
+      organizerName: "",
+      contactLink: "",
+    });
+    setImageFiles([]);
+    setImageUrls([]);
   };
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
-          Add Event / Promotion
+          {eventToEdit ? "Edit Event" : "Add New Event"}
         </h2>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">Access Level:</span>
@@ -133,39 +210,12 @@ export default function EventPromotionForm() {
         </div>
       </div>
 
-      {message && (
-        <div
-          className={`mb-6 p-4 rounded-lg flex items-center ${
-            messageType === "success"
-              ? "bg-green-50 text-green-700 border border-green-200"
-              : "bg-red-50 text-red-700 border border-red-200"
-          }`}
-        >
-          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            {messageType === "success" ? (
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            ) : (
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            )}
-          </svg>
-          {message}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
+              Event Title *
             </label>
             <input
               type="text"
@@ -173,7 +223,7 @@ export default function EventPromotionForm() {
               value={formData.title}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter event or promotion title"
+              placeholder="Enter event title"
               required
             />
           </div>
@@ -188,10 +238,12 @@ export default function EventPromotionForm() {
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="promotion">Promotion</option>
-              <option value="announcement">Announcement</option>
-              <option value="news">News</option>
               <option value="event">Event</option>
+              <option value="exhibition">Exhibition</option>
+              <option value="workshop">Workshop</option>
+              <option value="conference">Conference</option>
+              <option value="festival">Festival</option>
+              <option value="symposium">Symposium</option>
             </select>
           </div>
         </div>
@@ -202,35 +254,60 @@ export default function EventPromotionForm() {
           </label>
           <input
             type="text"
-            name="description"
-            value={formData.description}
+            name="shortDescription"
+            value={formData.shortDescription}
             onChange={handleInputChange}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Brief description of the event or promotion"
+            placeholder="Brief description of the event"
             required
           />
         </div>
 
+        {/* Full Description Paragraphs */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Full Details / Information *
+            Full Description Paragraphs *
           </label>
-          <textarea
-            name="details"
-            value={formData.details}
-            onChange={handleInputChange}
-            rows={4}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Detailed information about the event or promotion..."
-            required
-          />
+          {formData.fullDescription.map((paragraph, index) => (
+            <div key={index} className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">
+                  Paragraph {index + 1}
+                </span>
+                {formData.fullDescription.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeDescriptionParagraph(index)}
+                    className="text-red-600 hover:text-red-800 text-sm"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <textarea
+                value={paragraph}
+                onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                rows={3}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter paragraph content..."
+                required
+              />
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addDescriptionParagraph}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          >
+            + Add Another Paragraph
+          </button>
         </div>
 
-        {/* Event Scheduling */}
+        {/* Event Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Event Date
+              Event Date *
             </label>
             <input
               type="date"
@@ -238,6 +315,7 @@ export default function EventPromotionForm() {
               value={formData.eventDate}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
             />
           </div>
 
@@ -255,189 +333,176 @@ export default function EventPromotionForm() {
           </div>
         </div>
 
-        {/* Tags */}
+        {/* Video Link */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tags / Labels
+            YouTube or TikTok Video Link
           </label>
           <input
-            type="text"
-            name="tags"
-            value={formData.tags}
+            type="url"
+            name="videoLink"
+            value={formData.videoLink}
             onChange={handleInputChange}
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter tags separated by commas (e.g., music, art, free)"
+            placeholder="https://youtube.com/watch?v=... or https://tiktok.com/@user/video/..."
           />
           <p className="text-xs text-gray-500 mt-1">
-            Separate multiple tags with commas
+            Supports YouTube and TikTok links. Videos will be embedded
+            automatically.
           </p>
         </div>
 
-        {/* Media Upload Section */}
+        {/* Image Upload Section */}
         <div className="border-t pt-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Media Upload
+            Event Images
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Image Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image Upload
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
-                <input
-                  type="file"
-                  name="imageFile"
-                  accept="image/*"
-                  onChange={handleInputChange}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <label htmlFor="image-upload" className="cursor-pointer">
-                  <svg
-                    className="mx-auto h-8 w-8 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Click to upload image
-                  </p>
-                </label>
-              </div>
-              {preview.image && (
-                <div className="mt-2 relative">
-                  <img
-                    src={preview.image}
-                    alt="Preview"
-                    className="w-full h-24 object-cover rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => clearMedia("image")}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Video Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Video Upload
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
-                <input
-                  type="file"
-                  name="videoFile"
-                  accept="video/*"
-                  onChange={handleInputChange}
-                  className="hidden"
-                  id="video-upload"
-                />
-                <label htmlFor="video-upload" className="cursor-pointer">
-                  <svg
-                    className="mx-auto h-8 w-8 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Click to upload video
-                  </p>
-                </label>
-              </div>
-              {preview.video && (
-                <div className="mt-2 relative">
-                  <video
-                    src={preview.video}
-                    className="w-full h-24 object-cover rounded"
-                    controls
-                  />
-                  <button
-                    type="button"
-                    onClick={() => clearMedia("video")}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* YouTube Link */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                YouTube Link
-              </label>
+          {/* Image Upload */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Images
+            </label>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
               <input
-                type="url"
-                name="youtubeLink"
-                value={formData.youtubeLink}
-                onChange={handleYoutubeLinkChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="https://youtube.com/watch?v=..."
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
               />
-              {preview.youtube && (
-                <div className="mt-2 relative">
-                  <img
-                    src={`https://img.youtube.com/vi/${preview.youtube}/mqdefault.jpg`}
-                    alt="YouTube Preview"
-                    className="w-full h-24 object-cover rounded"
+              <label htmlFor="image-upload" className="cursor-pointer">
+                <svg
+                  className="mx-auto h-8 w-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData((prev) => ({ ...prev, youtubeLink: "" }));
-                      setPreview((prev) => ({ ...prev, youtube: null }));
-                    }}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                  >
-                    ×
-                  </button>
-                </div>
-              )}
+                </svg>
+                <p className="text-sm text-gray-600 mt-2">
+                  Click to upload images or drag and drop
+                </p>
+              </label>
             </div>
           </div>
+
+          {/* Add Image URL */}
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={handleImageUrlAdd}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              + Add Image URL
+            </button>
+          </div>
+
+          {/* Image Previews */}
+          {(imageFiles.length > 0 || imageUrls.length > 0) && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {imageFiles.map((file, index) => (
+                <div key={`file-${index}`} className="relative">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Upload ${index + 1}`}
+                    className="w-full h-24 object-cover rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index, "file")}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              {imageUrls.map((url, index) => (
+                <div key={`url-${index}`} className="relative">
+                  <img
+                    src={url}
+                    alt={`URL ${index + 1}`}
+                    className="w-full h-24 object-cover rounded"
+                    onError={(e) => {
+                      e.target.src =
+                        "https://via.placeholder.com/100x100?text=Invalid+URL";
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index, "url")}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Location and Organizer */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Location/Venue *
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter event location"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Organizer Name *
+            </label>
+            <input
+              type="text"
+              name="organizerName"
+              value={formData.organizerName}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter organizer name"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Contact Link */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Contact Link (Optional)
+          </label>
+          <input
+            type="url"
+            name="contactLink"
+            value={formData.contactLink}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="https://t.me/username or https://instagram.com/username or email@example.com"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Telegram, Instagram, Email, or any contact link
+          </p>
         </div>
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-4 pt-6 border-t">
           <button
             type="button"
-            onClick={() => {
-              setFormData({
-                title: "",
-                description: "",
-                details: "",
-                category: "promotion",
-                eventDate: "",
-                eventTime: "",
-                tags: "",
-                mediaType: "image",
-                imageFile: null,
-                videoFile: null,
-                youtubeLink: "",
-              });
-              setPreview({ image: null, video: null, youtube: null });
-            }}
+            onClick={resetForm}
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Clear Form
@@ -469,8 +534,10 @@ export default function EventPromotionForm() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                Adding Event...
+                {eventToEdit ? "Updating Event..." : "Adding Event..."}
               </>
+            ) : eventToEdit ? (
+              "Update Event"
             ) : (
               "Add Event"
             )}

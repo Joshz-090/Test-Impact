@@ -2,198 +2,74 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+import { getUpcomingEvents, getPastEvents } from "../utils/eventUtils";
+import CountdownTimer from "../components/CountdownTimer";
+import ImageCarousel from "../components/ImageCarousel";
+import VideoEmbed from "../components/VideoEmbed";
+import toast from "react-hot-toast";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Events = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [filterCategory, setFilterCategory] = useState("all");
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const threeJsInitialized = useRef(false);
 
-  const events = [
-    {
-      id: 1,
-      title: "Spring Art Exhibition 2024",
-      date: "March 15-30, 2024",
-      startDate: "2024-03-15",
-      endDate: "2024-03-30",
-      location: "Contemporary Art Gallery",
-      description:
-        "A celebration of contemporary art featuring local and international artists. This exhibition showcases innovative works across various mediums including painting, sculpture, digital art, and installations.",
-      image:
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-      category: "Exhibition",
-      attendees: "500+",
-      gallery: [
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 2,
-      title: "Design Week Conference",
-      date: "April 10-12, 2024",
-      startDate: "2024-04-10",
-      endDate: "2024-04-12",
-      location: "Convention Center",
-      description:
-        "Join industry leaders for three days of design innovation and networking. Features keynote speakers, workshops, and networking opportunities for creative professionals.",
-      image:
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-      category: "Conference",
-      attendees: "300+",
-      gallery: [
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 3,
-      title: "Digital Art Workshop",
-      date: "May 5, 2024",
-      startDate: "2024-05-05",
-      endDate: "2024-05-05",
-      location: "Creative Studio",
-      description:
-        "Learn the latest digital art techniques from our expert team. Hands-on workshop covering digital painting, 3D modeling, and animation fundamentals.",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      category: "Workshop",
-      attendees: "50",
-      gallery: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 4,
-      title: "Winter Art Festival",
-      date: "December 15-20, 2023",
-      startDate: "2023-12-15",
-      endDate: "2023-12-20",
-      location: "City Plaza",
-      description:
-        "A magical winter celebration featuring ice sculptures, light installations, and interactive art experiences. Family-friendly event with activities for all ages.",
-      image:
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-      category: "Festival",
-      attendees: "1000+",
-      gallery: [
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 5,
-      title: "Architecture Symposium",
-      date: "November 8-10, 2023",
-      startDate: "2023-11-08",
-      endDate: "2023-11-10",
-      location: "Design Institute",
-      description:
-        "Exploring the future of sustainable architecture and urban design. Presentations from leading architects and urban planners on innovative design solutions.",
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-      category: "Symposium",
-      attendees: "200+",
-      gallery: [
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 6,
-      title: "Tech & Art Fusion",
-      date: "October 20, 2023",
-      startDate: "2023-10-20",
-      endDate: "2023-10-20",
-      location: "Innovation Hub",
-      description:
-        "Exploring the intersection of technology and art through interactive installations, VR experiences, and AI-generated artwork demonstrations.",
-      image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-      category: "Exhibition",
-      attendees: "150+",
-      gallery: [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      ],
-    },
-    // Added new future events for demonstration since current date is 2025
-    {
-      id: 7,
-      title: "Autumn Design Expo 2025",
-      date: "September 20-25, 2025",
-      startDate: "2025-09-20",
-      endDate: "2025-09-25",
-      location: "Design Center",
-      description:
-        "An expo showcasing the latest in design trends, with exhibits from top designers and interactive sessions.",
-      image:
-        "https://images.unsplash.com/photo-1507146152569-19c0ab5b4d68?w=400&h=300&fit=crop",
-      category: "Expo",
-      attendees: "400+",
-      gallery: [
-        "https://images.unsplash.com/photo-1507146152569-19c0ab5b4d68?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      ],
-    },
-    {
-      id: 8,
-      title: "AI Art Symposium 2026",
-      date: "January 15, 2026",
-      startDate: "2026-01-15",
-      endDate: "2026-01-15",
-      location: "Tech Auditorium",
-      description:
-        "Discussing the role of AI in modern art, with panels and demonstrations from leading experts.",
-      image:
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
-      category: "Symposium",
-      attendees: "250+",
-      gallery: [
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-      ],
-    },
+  // Fetch events from Firebase
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const [upcomingResult, pastResult] = await Promise.all([
+          getUpcomingEvents(),
+          getPastEvents(),
+        ]);
+
+        if (upcomingResult.success) {
+          setUpcomingEvents(upcomingResult.events);
+        } else {
+          toast.error("Failed to load upcoming events");
+        }
+
+        if (pastResult.success) {
+          setPastEvents(pastResult.events);
+        } else {
+          toast.error("Failed to load past events");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        toast.error("An error occurred while loading events");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // Get unique categories from all events
+  const allEvents = [...upcomingEvents, ...pastEvents];
+  const categories = [
+    "all",
+    ...new Set(allEvents.map((event) => event.category)),
   ];
 
-  // Dynamically compute upcoming and past events based on current date
-  const now = new Date();
-  let upcomingEvents = events
-    .filter((event) => new Date(event.endDate) > now)
-    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-
-  let pastEvents = events
-    .filter((event) => new Date(event.endDate) <= now)
-    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-  // Apply category filter to upcoming events
-  const categories = ["all", ...new Set(events.map((event) => event.category))];
-  if (filterCategory !== "all") {
-    upcomingEvents = upcomingEvents.filter(
-      (event) => event.category === filterCategory
-    );
-  }
+  // Filter upcoming events by category
+  const filteredUpcomingEvents =
+    filterCategory !== "all"
+      ? upcomingEvents.filter((event) => event.category === filterCategory)
+      : upcomingEvents;
 
   // Dynamic statistics
-  const totalEvents = events.length;
-  const totalAttendees = events.reduce((sum, event) => {
-    const num = parseInt(event.attendees.replace(/\D/g, ""), 10) || 0;
-    return sum + num;
+  const totalEvents = allEvents.length;
+  const totalAttendees = allEvents.reduce((sum) => {
+    // This would need to be calculated from actual attendee data
+    return sum + Math.floor(Math.random() * 500) + 50; // Placeholder
   }, 0);
-  const featuredArtists = new Set(events.flatMap((event) => event.gallery))
-    .size;
 
   useEffect(() => {
     let scene, camera, renderer, particles;
@@ -336,7 +212,7 @@ const Events = () => {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, []);
+  }, [upcomingEvents, pastEvents]);
 
   // Disable body scroll when modal is open
   useEffect(() => {
@@ -353,17 +229,40 @@ const Events = () => {
   // Newsletter submit handler
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    alert("Subscribed successfully!");
+    toast.success("Subscribed successfully!");
   };
 
   // Register handler
   const handleRegister = () => {
-    alert("Registered successfully!");
+    toast.success("Registered successfully!");
   };
+
+  // Format date for display
+  const formatEventDate = (dateString, timeString) => {
+    const date = new Date(`${dateString}T${timeString || "00:00"}`);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#010120] to-[#dddddd] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#D4AF37] mx-auto"></div>
+          <p className="text-white text-xl mt-4">Loading events...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#dddddd] text-white font-sans overflow-hidden"
+      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#888888] text-white font-sans overflow-hidden"
       ref={containerRef}
     >
       {/* Hero Section */}
@@ -414,21 +313,15 @@ const Events = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event) => (
+            {filteredUpcomingEvents.map((event) => (
               <div
                 key={event.id}
                 className="event-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100"
               >
                 <div className="relative overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/400x300?text=Image+Not+Found";
-                    }}
+                  <ImageCarousel
+                    images={event.images}
+                    className="w-full h-48"
                   />
                   <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm font-semibold">
                     {event.category}
@@ -442,15 +335,27 @@ const Events = () => {
                     {event.title}
                   </h3>
                   <div className="flex items-center text-sm text-gray-600 mb-3">
-                    <span className="mr-4">📅 {event.date}</span>
+                    <span className="mr-4">
+                      📅 {formatEventDate(event.eventDate, event.eventTime)}
+                    </span>
                     <span>📍 {event.location}</span>
                   </div>
                   <p className="text-gray-700 mb-4 line-clamp-3">
-                    {event.description}
+                    {event.shortDescription}
                   </p>
+
+                  {/* Countdown Timer */}
+                  <div className="mb-4">
+                    <CountdownTimer
+                      eventDate={event.eventDate}
+                      eventTime={event.eventTime}
+                      className="mb-4"
+                    />
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#D4AF37] font-medium">
-                      {event.attendees} attendees
+                      Organizer: {event.organizerName}
                     </span>
                     <button
                       onClick={() => setSelectedEvent(event)}
@@ -462,7 +367,7 @@ const Events = () => {
                 </div>
               </div>
             ))}
-            {upcomingEvents.length === 0 && (
+            {filteredUpcomingEvents.length === 0 && (
               <p className="text-center text-gray-600 col-span-full">
                 No upcoming events in this category.
               </p>
@@ -490,15 +395,9 @@ const Events = () => {
                 className="event-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100"
               >
                 <div className="relative overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-48 object-cover transition-transform duration-700 hover:scale-110"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/400x300?text=Image+Not+Found";
-                    }}
+                  <ImageCarousel
+                    images={event.images}
+                    className="w-full h-48"
                   />
                   <div className="absolute top-4 left-4 bg-[#D4AF37] text-black px-3 py-1 rounded-full text-sm font-semibold">
                     {event.category}
@@ -512,15 +411,17 @@ const Events = () => {
                     {event.title}
                   </h3>
                   <div className="flex items-center text-sm text-gray-600 mb-3">
-                    <span className="mr-4">📅 {event.date}</span>
+                    <span className="mr-4">
+                      📅 {formatEventDate(event.eventDate, event.eventTime)}
+                    </span>
                     <span>📍 {event.location}</span>
                   </div>
                   <p className="text-gray-700 mb-4 line-clamp-3">
-                    {event.description}
+                    {event.shortDescription}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-[#D4AF37] font-medium">
-                      {event.attendees} attendees
+                      Organizer: {event.organizerName}
                     </span>
                     <button
                       onClick={() => setSelectedEvent(event)}
@@ -548,18 +449,15 @@ const Events = () => {
               >
                 ×
               </button>
-              <div className="h-64 bg-gray-200">
-                <img
-                  src={selectedEvent.image}
-                  alt={selectedEvent.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/400x300?text=Image+Not+Found";
-                  }}
+
+              {/* Event Images */}
+              <div className="h-64">
+                <ImageCarousel
+                  images={selectedEvent.images}
+                  className="w-full h-full"
                 />
               </div>
+
               <div className="p-8">
                 <h2 className="text-3xl font-bold text-black mb-4 font-montserrat">
                   {selectedEvent.title}
@@ -573,7 +471,10 @@ const Events = () => {
                     <div className="space-y-2 text-gray-700">
                       <div className="flex items-center">
                         <span className="w-24 font-medium">Date:</span>
-                        {selectedEvent.date}
+                        {formatEventDate(
+                          selectedEvent.eventDate,
+                          selectedEvent.eventTime
+                        )}
                       </div>
                       <div className="flex items-center">
                         <span className="w-24 font-medium">Location:</span>
@@ -584,55 +485,84 @@ const Events = () => {
                         {selectedEvent.category}
                       </div>
                       <div className="flex items-center">
-                        <span className="w-24 font-medium">Attendees:</span>
-                        {selectedEvent.attendees}
+                        <span className="w-24 font-medium">Organizer:</span>
+                        {selectedEvent.organizerName}
                       </div>
+                      {selectedEvent.contactLink && (
+                        <div className="flex items-center">
+                          <span className="w-24 font-medium">Contact:</span>
+                          <a
+                            href={selectedEvent.contactLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            {selectedEvent.contactLink}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-2">
                       Description
                     </h3>
-                    <p className="text-gray-700">{selectedEvent.description}</p>
+                    <p className="text-gray-700 mb-4">
+                      {selectedEvent.shortDescription}
+                    </p>
+
+                    {/* Full Description Paragraphs */}
+                    {selectedEvent.fullDescription &&
+                      selectedEvent.fullDescription.length > 0 && (
+                        <div className="space-y-2">
+                          {selectedEvent.fullDescription.map(
+                            (paragraph, index) => (
+                              <p key={index} className="text-gray-700">
+                                {paragraph}
+                              </p>
+                            )
+                          )}
+                        </div>
+                      )}
                   </div>
                 </div>
 
-                {/* Photo Gallery */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-black mb-4">
-                    Photo Gallery
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {selectedEvent.gallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="h-32 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                      >
-                        <img
-                          src={image}
-                          alt={`Gallery ${index + 1}`}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.src =
-                              "https://via.placeholder.com/400x300?text=Image+Not+Found";
-                          }}
-                        />
-                      </div>
-                    ))}
+                {/* Video Embed */}
+                {selectedEvent.videoLink && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-black mb-4">
+                      Event Video
+                    </h3>
+                    <VideoEmbed
+                      videoLink={selectedEvent.videoLink}
+                      className="w-full"
+                    />
                   </div>
-                </div>
+                )}
+
+                {/* Countdown Timer for upcoming events */}
+                {new Date(selectedEvent.eventDate) > new Date() && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-black mb-4">
+                      Time Until Event
+                    </h3>
+                    <CountdownTimer
+                      eventDate={selectedEvent.eventDate}
+                      eventTime={selectedEvent.eventTime}
+                    />
+                  </div>
+                )}
 
                 <div className="flex gap-4">
                   <button
                     onClick={
-                      new Date(selectedEvent.endDate) > now
+                      new Date(selectedEvent.eventDate) > new Date()
                         ? handleRegister
-                        : () => alert("View full gallery (placeholder)")
+                        : () => toast.success("View full gallery (placeholder)")
                     }
                     className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors transform hover:-translate-y-1 duration-300"
                   >
-                    {new Date(selectedEvent.endDate) > now
+                    {new Date(selectedEvent.eventDate) > new Date()
                       ? "Register Now"
                       : "View Full Gallery"}
                   </button>
@@ -668,7 +598,13 @@ const Events = () => {
                 value: `${totalAttendees.toLocaleString()}+`,
                 label: "Total Attendees",
               },
-              { value: `${featuredArtists}+`, label: "Featured Images" },
+              {
+                value: `${allEvents.reduce(
+                  (sum, event) => sum + (event.images?.length || 0),
+                  0
+                )}+`,
+                label: "Event Images",
+              },
               { value: "95%", label: "Satisfaction Rate" },
             ].map((stat, index) => (
               <div key={index} className="text-center stat-item">

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import {
   FaPaintBrush,
@@ -10,6 +11,7 @@ import {
   FaGlobeAfrica,
   FaLeaf,
 } from "react-icons/fa";
+import MissionVision from "../components/MissionVision";
 
 import cosap from "../assets/images/logos/1 final.jpg";
 import videos from "../assets/video/logo video.mp4";
@@ -20,6 +22,18 @@ gsap.registerPlugin(ScrollTrigger);
 const About = () => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
+
+  const scrollTo = (selector) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const openInNewTab = (url) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   // Three.js setup
   useEffect(() => {
@@ -307,7 +321,7 @@ const About = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-gray-900 to-[#333333] text-white font-sans"
+      className="min-h-screen bg-gradient-to-b from-[#010120] to-[#888888] text-white font-sans"
       ref={containerRef}
     >
       {/* Hero Section with 3D Background */}
@@ -324,12 +338,18 @@ const About = () => {
             Where Ethiopian art meets social transformation
           </p>
           <div className="hero-title mt-12">
-            <button className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-110 hover:shadow-lg hover:shadow-[#D4AF37]/50">
+            <button
+              className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-110 hover:shadow-lg hover:shadow-[#D4AF37]/50"
+              onClick={() => scrollTo("#evolution")}
+            >
               Explore Our Journey
             </button>
           </div>
         </div>
       </section>
+
+      {/* Mission & Vision (componentized) */}
+      <MissionVision />
 
       {/*  Company Section */}
       <section className="company-section py-20 section-reveal backdrop-blur-sm">
@@ -368,7 +388,7 @@ const About = () => {
               </div>
             </div>
             {/* Company Description */}
-            <div className="company-content w-full lg:w-1/2">
+            <div className="company-content w-full lg:w-1/2" id="about-us">
               <h2 className="text-4xl font-bold mb-6 font-montserrat">
                 About <span className="text-[#D4AF37]">Our Company</span>
               </h2>
@@ -410,7 +430,10 @@ const About = () => {
                   </div>
                 </div>
               </div>
-              <button className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-[#D4AF37]/50 flex items-center">
+              <button
+                className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-[#D4AF37]/50 flex items-center"
+                onClick={() => scrollTo("#about-us")}
+              >
                 Learn More About Us
                 <svg
                   className="w-5 h-5 ml-2"
@@ -463,7 +486,10 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-20 section-reveal bg-black/30 backdrop-blur-sm">
+      <section
+        className="py-20 section-reveal bg-black/30 backdrop-blur-sm"
+        id="evolution"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12 md:mb-16 font-montserrat">
             Our <span className="text-[#D4AF37]">Evolution</span>
@@ -570,7 +596,10 @@ const About = () => {
                 let's collaborate to build a more creative Ethiopia.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-110 hover:shadow-lg hover:shadow-[#D4AF37]/50">
+                <button
+                  className="bg-[#D4AF37] hover:bg-[#c9a227] text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-110 hover:shadow-lg hover:shadow-[#D4AF37]/50"
+                  onClick={() => navigate("/contact")}
+                >
                   <svg
                     className="w-5 h-5 mr-2 inline-block"
                     fill="none"
@@ -586,7 +615,10 @@ const About = () => {
                   </svg>
                   Contact Us
                 </button>
-                <button className="bg-transparent hover:bg-white/10 text-white font-bold py-3 px-8 border border-white rounded-full transition-all transform hover:scale-110">
+                <button
+                  className="bg-transparent hover:bg-white/10 text-white font-bold py-3 px-8 border border-white rounded-full transition-all transform hover:scale-110"
+                  onClick={() => navigate("/portfolio")}
+                >
                   <svg
                     className="w-5 h-5 mr-2 inline-block"
                     fill="none"
@@ -607,12 +639,21 @@ const About = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer">
+            <div
+              className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer"
+              onClick={() =>
+                openInNewTab(
+                  "https://www.google.com/maps?q=Abysinia+Plaza,+Addis+Ababa"
+                )
+              }
+            >
               <h4 className="font-bold text-lg mb-2">Addis Ababa</h4>
               <p className="text-sm text-gray-300">Abysinia Plaza, 3rd Floor</p>
               <div className="mt-4">
                 <a
-                  href="#"
+                  href="https://www.google.com/maps?q=Abysinia+Plaza,+Addis+Ababa"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-[#D4AF37] hover:underline flex items-center text-sm"
                 >
                   <svg
@@ -638,14 +679,103 @@ const About = () => {
                 </a>
               </div>
             </div>
-            <div className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer">
+            <div
+              className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer"
+              onClick={() =>
+                openInNewTab(
+                  "https://www.google.com/maps?q=Adama+Cinema,+Adama"
+                )
+              }
+            >
               <h4 className="font-bold text-lg mb-2">Adama</h4>
               <p className="text-sm text-gray-300">
                 Posta Bet (near Adama Cinema)
               </p>
               <div className="mt-4">
                 <a
-                  href="#"
+                  href="https://www.google.com/maps?q=Adama+Cinema,+Adama"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#D4AF37] hover:underline flex items-center text-sm"
+                >
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  View on Map
+                </a>
+              </div>
+            </div>
+            <div
+              className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer"
+              onClick={() =>
+                openInNewTab(
+                  "https://www.google.com/maps?q=Arba+Minch,+Ethiopia"
+                )
+              }
+            >
+              <h4 className="font-bold text-lg mb-2">Arba Minch</h4>
+              <p className="text-sm text-gray-300">
+                Southern Nations, Nationalities, and Peoples' Region
+              </p>
+              <div className="mt-4">
+                <a
+                  href="https://www.google.com/maps?q=Arba+Minch,+Ethiopia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#D4AF37] hover:underline flex items-center text-sm"
+                >
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  View on Map
+                </a>
+              </div>
+            </div>
+            <div
+              className="location-card bg-black/50 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all hover:scale-105 cursor-pointer"
+              onClick={() =>
+                openInNewTab("https://www.google.com/maps?q=Gigiga,+Ethiopia")
+              }
+            >
+              <h4 className="font-bold text-lg mb-2">Gigiga</h4>
+              <p className="text-sm text-gray-300">Eastern Ethiopia</p>
+              <div className="mt-4">
+                <a
+                  href="https://www.google.com/maps?q=Gigiga,+Ethiopia"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-[#D4AF37] hover:underline flex items-center text-sm"
                 >
                   <svg

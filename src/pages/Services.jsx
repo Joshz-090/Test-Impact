@@ -2,13 +2,24 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+import { useNavigate } from "react-router-dom";
 import LearnMoreButton from "../components/LearnMoreButton";
+import services from "../data/services";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Services = () => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
+
+  const handleGetQuote = () => {
+    navigate("/contact");
+  };
+
+  const handleScheduleConsultation = () => {
+    navigate("/start-project");
+  };
 
   useEffect(() => {
     let scene, camera, renderer, particles;
@@ -180,127 +191,7 @@ const Services = () => {
     };
   }, []);
 
-  const services = [
-    {
-      id: "art",
-      title: "Art & Exhibition Creation",
-      description:
-        "Curate and organize stunning art exhibitions that showcase Ethiopian talent and inspire audiences. From concept to execution, we handle every detail.",
-      icon: "🎨",
-      features: [
-        "Exhibition Planning & Curation",
-        "Artist Coordination",
-        "Venue Selection & Setup",
-        "Marketing & Promotion",
-        "Opening Night Events",
-        "Artwork Transportation",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=300&fit=crop",
-    },
-    {
-      id: "event",
-      title: "Event Organization & Branding",
-      description:
-        "Create memorable brand experiences through strategic event planning and innovative branding solutions that leave lasting impressions.",
-      icon: "📆",
-      features: [
-        "Brand Identity Development",
-        "Event Concept Design",
-        "Logistics Management",
-        "Digital & Print Materials",
-        "On-site Coordination",
-        "Post-event Analysis",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop",
-    },
-    {
-      id: "graphic",
-      title: "Graphic Design & Content Creation",
-      description:
-        "Transform ideas into compelling visual stories with our comprehensive graphic design services that capture attention and convey messages effectively.",
-      icon: "🖌",
-      features: [
-        "Logo Design & Branding",
-        "Print & Digital Materials",
-        "Packaging Design",
-        "Social Media Graphics",
-        "Infographics & Data Viz",
-        "Typography & Layout",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-    },
-    {
-      id: "digital",
-      title: "Digital Marketing",
-      description:
-        "Drive growth and engagement through strategic digital marketing campaigns that reach your target audience and deliver measurable results.",
-      icon: "🌐",
-      features: [
-        "Social Media Management",
-        "Content Marketing",
-        "SEO & SEM",
-        "Email Campaigns",
-        "Analytics & Reporting",
-        "Influencer Partnerships",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1557838923-2985c318be48?w=400&h=300&fit=crop",
-    },
-    {
-      id: "web",
-      title: "Website & App Development",
-      description:
-        "Build cutting-edge digital experiences with responsive websites and mobile applications that engage users and drive results.",
-      icon: "💻",
-      features: [
-        "Responsive Web Design",
-        "E-commerce Solutions",
-        "Mobile App Development",
-        "UI/UX Design",
-        "Custom CMS Development",
-        "Performance Optimization",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-    },
-    {
-      id: "arc",
-      title: "Architectural & Interior Design",
-      description:
-        "Transform spaces with innovative interior design and construction solutions that blend functionality with artistic expression.",
-      icon: "🏛",
-      features: [
-        "Interior Design Planning",
-        "Space Optimization",
-        "Custom Furniture Design",
-        "Renovation & Construction",
-        "Material Selection",
-        "Project Management",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-    },
-    {
-      id: "edu",
-      title: "School Outreach & Educational Programs",
-      description:
-        "Empower the next generation through creative educational programs and school outreach initiatives that inspire learning and artistic expression.",
-      icon: "🎓",
-      features: [
-        "Art Education Programs",
-        "School Workshops",
-        "Competition Organization",
-        "Student Mentorship",
-        "Curriculum Development",
-        "Community Engagement",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop",
-    },
-  ];
+  // services data now sourced from ../data/services (six client-facing categories)
 
   return (
     <div
@@ -325,44 +216,75 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Section Title */}
+      <section className="section-reveal py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 font-montserrat">
+            Explore Our{" "}
+            <span className="text-[#D4AF37]">Creative Services</span>
+          </h2>
+          <p className="text-base sm:text-lg text-gray-300 max-w-3xl mx-auto">
+            Professional solutions tailored to bring your vision to life across
+            Ethiopia.
+          </p>
+        </div>
+      </section>
+
       {/* Services Grid */}
       <section className="py-20 section-reveal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 partners-section">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 partners-section">
             {services.map((service) => (
               <div
                 key={service.id}
-                className="value-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-100"
+                className="group value-card bg-black/60 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-[#D4AF37]/20 hover:border-[#D4AF37]/40 h-full flex flex-col"
               >
-                <div className="h-48 bg-gray-200 relative overflow-hidden">
+                <div className="relative h-48 overflow-hidden flex-shrink-0">
                   <img
-                    src={service.image}
+                    src={
+                      Array.isArray(service.images)
+                        ? service.images[0]
+                        : service.image
+                    }
                     alt={service.title}
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                    loading="lazy"
+                    className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute top-4 left-4 text-4xl bg-black/20 p-2 rounded-lg">
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                  <div className="absolute top-4 left-4 text-3xl sm:text-4xl drop-shadow">
                     {service.icon}
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-black mb-3 font-montserrat">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-700 mb-4">{service.description}</p>
-
-                  <div className="space-y-2">
-                    {service.features.map((feature, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center text-sm text-gray-600"
-                      >
-                        <div className="w-2 h-2 bg-[#D4AF37] rounded-full mr-3"></div>
-                        {feature}
-                      </div>
-                    ))}
+                <div className="p-5 sm:p-6 flex-1 flex flex-col">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-3 font-montserrat tracking-tight">
+                      {service.title}
+                    </h3>
                   </div>
 
-                  <LearnMoreButton id={service.id} />
+                  <div className="flex-1">
+                    <p className="text-gray-300/90 text-sm sm:text-base mb-4 leading-relaxed">
+                      {Array.isArray(service.description)
+                        ? service.description[0]
+                        : service.description}
+                    </p>
+
+                    <div className="space-y-2 mb-4">
+                      {service.features.slice(0, 3).map((feature, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center text-xs sm:text-sm text-gray-300"
+                        >
+                          <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full mr-2"></div>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-auto">
+                    <LearnMoreButton id={service.id} />
+                  </div>
                 </div>
               </div>
             ))}
@@ -371,18 +293,18 @@ const Services = () => {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 bg-gray-50/80 backdrop-blur-sm">
+      <section className="py-20 bg-black/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 font-montserrat">
-              Our Process
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-montserrat">
+              Our <span className="text-[#D4AF37]">Process</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               How we bring your creative vision to life
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {[
               {
                 num: "1",
@@ -405,16 +327,21 @@ const Services = () => {
                 desc: "We ensure smooth delivery and provide ongoing support to maintain your creative success.",
               },
             ].map((step, i) => (
-              <div key={i} className="text-center timeline-item">
+              <div
+                key={i}
+                className="text-center timeline-item bg-black/40 backdrop-blur-sm p-6 rounded-2xl hover:bg-black/60 transition-all duration-300"
+              >
                 <div className="w-16 h-16 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <span className="text-2xl font-bold text-black">
                     {step.num}
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold text-black mb-2 font-montserrat">
+                <h3 className="text-xl font-semibold text-white mb-2 font-montserrat">
                   {step.title}
                 </h3>
-                <p className="text-gray-700">{step.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  {step.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -422,19 +349,25 @@ const Services = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-black/90 text-white backdrop-blur-sm">
+      <section className="py-20 bg-gradient-to-br from-black/90 to-gray-900 text-white backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6 font-montserrat">
-            Ready to Start Your Project?
+            Ready to <span className="text-[#D4AF37]">Start</span> Your Project?
           </h2>
           <p className="text-xl text-gray-300 mb-8">
             Let's discuss how we can help bring your creative vision to life
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-[#D4AF37] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#B8941F] transition-colors shadow-lg text-lg transform hover:-translate-y-1 duration-300">
+            <button
+              className="bg-[#D4AF37] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#B8941F] transition-all shadow-lg text-lg transform hover:-translate-y-1 duration-300 hover:shadow-[#D4AF37]/50"
+              onClick={handleGetQuote}
+            >
               Get a Quote
             </button>
-            <button className="border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-lg font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors text-lg transform hover:-translate-y-1 duration-300">
+            <button
+              className="border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-4 rounded-lg font-semibold hover:bg-[#D4AF37] hover:text-black transition-all text-lg transform hover:-translate-y-1 duration-300"
+              onClick={handleScheduleConsultation}
+            >
               Schedule Consultation
             </button>
           </div>

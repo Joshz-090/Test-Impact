@@ -29,8 +29,6 @@ import {
 } from "recharts";
 import { useMetrics } from "../../context/MetricsContext";
 import AccessTest from "../../components/admin/AccessTest";
-import EventPromotionForm from "../../components/admin/EventPromotionForm";
-import DepartmentForm from "../../components/admin/DepartmentForm";
 
 const COLORS = ["#0ea5e9", "#94a3b8", "#10b981", "#f59e0b", "#ef4444"];
 const SUBSCRIPTION_COLORS = ["#10b981", "#94a3b8"];
@@ -444,36 +442,57 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Management Sections */}
-        <div className="space-y-8">
-          {/* Event & Promotion Management */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Event & Promotion Management
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Create and manage events, promotions, and announcements
-                </p>
-              </div>
-            </div>
-            <EventPromotionForm />
-          </div>
-
-          {/* Department & Team Management */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Department & Team Management
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Create and manage departments with team members
-                </p>
-              </div>
-            </div>
-            <DepartmentForm />
+        {/* Quick Actions */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <a
+              href="/admin/events"
+              className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              <span className="text-2xl mb-2">🎉</span>
+              <span className="text-sm font-medium text-blue-900">
+                Manage Events
+              </span>
+            </a>
+            <a
+              href="/admin/departments"
+              className="flex flex-col items-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
+            >
+              <span className="text-2xl mb-2">🏢</span>
+              <span className="text-sm font-medium text-indigo-900">
+                Departments
+              </span>
+            </a>
+            <a
+              href="/admin/members"
+              className="flex flex-col items-center p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
+            >
+              <span className="text-2xl mb-2">👤</span>
+              <span className="text-sm font-medium text-emerald-900">
+                Add Members
+              </span>
+            </a>
+            <a
+              href="/admin/projects"
+              className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+            >
+              <span className="text-2xl mb-2">📂</span>
+              <span className="text-sm font-medium text-green-900">
+                Projects
+              </span>
+            </a>
+            <a
+              href="/admin/subscribers"
+              className="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+            >
+              <span className="text-2xl mb-2">👥</span>
+              <span className="text-sm font-medium text-purple-900">
+                Subscribers
+              </span>
+            </a>
           </div>
         </div>
       </div>
