@@ -243,37 +243,44 @@ const About = () => {
   // Data arrays (unchanged)
   const timeline = [
     {
-      year: "2018",
+      year: "2023",
+      mounth: "sep",
       title: "Foundation",
       description: "Launched as collaborative art studio in Addis Ababa",
     },
     {
-      year: "2019",
+      year: "2024",
+      mounth: "Jan",
       title: "First Exhibition",
       description: "Showcased 30+ Ethiopian artists",
     },
     {
-      year: "2020",
+      year: "2023",
+      mounth: "sep",
       title: "Digital Expansion",
       description: "Added web & digital services",
     },
     {
-      year: "2021",
+      year: "2024",
+      mounth: "sep",
       title: "Partnerships",
       description: "Collaborated with major organizations",
     },
     {
-      year: "2022",
+      year: "2024",
+      mounth: "sep",
       title: "Gallery Success",
       description: "950+ attendees at Hebar events",
     },
     {
-      year: "2023",
+      year: "2024",
+      mounth: "sep",
       title: "Education",
       description: "Launched national competitions",
     },
     {
-      year: "2024",
+      year: "2025",
+      mounth: "sep",
       title: "Social Impact",
       description: "Creative campaigns reaching 50K+",
     },
@@ -516,9 +523,12 @@ const About = () => {
                   >
                     <div className="flex items-start">
                       {/* Year marker */}
-                      <div className="bg-[#D4AF37] text-black p-3 rounded-lg mr-4 flex-shrink-0">
+                      <div className="bg-[#D4AF37] text-black p-3 rounded-lg mr-4 flex-shrink-0 grid items-center justify-center col-span-1">
                         <div className="text-lg md:text-xl font-bold">
                           {item.year}
+                        </div>
+                        <div className="text-sm md:text-lg font-bold flex justify-center">
+                          {item.mounth}
                         </div>
                       </div>
                       <div>

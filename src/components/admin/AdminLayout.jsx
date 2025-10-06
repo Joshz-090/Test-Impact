@@ -66,6 +66,7 @@ export default function AdminLayout() {
   const navigationItems = [
     { to: "/admin", label: "Dashboard", icon: "📊", end: true },
     { to: "/admin/subscribers", label: "Subscribers", icon: "👥", end: false },
+    { to: "/admin/contacts", label: "Contacts", icon: "✉️", end: false },
     { to: "/admin/projects", label: "Projects", icon: "📂", end: false },
     { to: "/admin/events", label: "Events", icon: "🎉", end: false },
     { to: "/admin/departments", label: "Departments", icon: "🏢", end: false },

@@ -35,6 +35,7 @@ const AdminDepartments = lazy(() => import("./pages/admin/AdminDepartments"));
 const AdminAddMember = lazy(() => import("./pages/admin/AdminAddMember"));
 const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminSetup = lazy(() => import("./pages/admin/Setup"));
+const AdminContacts = lazy(() => import("./pages/admin/AdminContacts"));
 
 // Scroll-to-top component
 function ScrollToTop() {
@@ -126,6 +127,7 @@ function AppContent() {
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="departments" element={<AdminDepartments />} />
                 <Route path="members" element={<AdminAddMember />} />
+                <Route path="contacts" element={<AdminContacts />} />
                 <Route
                   path="admins"
                   element={

@@ -3,6 +3,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
 import { MapPin, Phone, Mail, Clock } from "lucide-react"; // Using Lucide icons for modern look
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +15,7 @@ const Contact = () => {
     message: "",
   });
   const [formStatus, setFormStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -50,14 +53,37 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.message.trim()
+    ) {
+      setFormStatus("error");
+      return;
+    }
+    const emailRegex = /[^\s@]+@[^\s@]+\.[^\s@]+/;
+    if (!emailRegex.test(formData.email.trim())) {
+      setFormStatus("error");
+      return;
+    }
     try {
-      // Placeholder for API call
+      setIsSubmitting(true);
+      await addDoc(collection(db, "contactSubmissions"), {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        message: formData.message.trim(),
+        createdAt: serverTimestamp(),
+        status: "new",
+      });
       setFormStatus("success");
       setFormData({ name: "", email: "", message: "" });
       setTimeout(() => setFormStatus(null), 3000);
     } catch (error) {
+      console.error("Failed to submit contact form", error);
       setFormStatus("error");
       setTimeout(() => setFormStatus(null), 3000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -95,7 +121,7 @@ const Contact = () => {
         new THREE.BufferAttribute(positions, 3)
       );
       const particlesMaterial = new THREE.PointsMaterial({
-        color: 0xffd700, // Modern gold color
+        color: 0xd4af37, // Brand gold color
         size: 0.015,
         transparent: true,
         opacity: 0.7,
@@ -246,7 +272,7 @@ const Contact = () => {
         <canvas ref={canvasRef} className="absolute inset-0" />
         <div className="relative z-10 text-center px-6 backdrop-blur-md bg-black/20 rounded-2xl py-12 max-w-4xl mx-auto">
           <h1 className="hero-title text-4xl md:text-6xl font-bold mb-6 font-['Montserrat'] tracking-tight">
-            Get in <span className="text-[#FFD700]">Touch</span>
+            Get in <span className="text-gold-500">Touch</span>
           </h1>
           <p className="hero-title text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed">
             Ready to start your next creative project? Let's collaborate to
@@ -260,7 +286,7 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-['Montserrat'] tracking-tight">
-              Our <span className="text-[#FFD700]">Offices</span>
+              Our <span className="text-gold-500">Offices</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Visit us at one of our locations or reach out online.
@@ -279,7 +305,7 @@ const Contact = () => {
                 <div className="space-y-5">
                   <div className="flex items-start">
                     <MapPin
-                      className="text-[#FFD700] mr-3 h-6 w-6"
+                      className="text-gold-500 mr-3 h-6 w-6"
                       aria-hidden="true"
                     />
                     <div>
@@ -291,12 +317,12 @@ const Contact = () => {
                   </div>
                   <div className="flex items-center">
                     <Phone
-                      className="text-[#FFD700] mr-3 h-6 w-6"
+                      className="text-gold-500 mr-3 h-6 w-6"
                       aria-hidden="true"
                     />
                     <a
                       href={`tel:${office.phone}`}
-                      className="text-gray-700 hover:text-[#FFD700] transition-colors font-medium"
+                      className="text-gray-700 hover:text-gold-500 transition-colors font-medium"
                       aria-label={`Call ${office.name} at ${office.phone}`}
                     >
                       {office.phone}
@@ -304,12 +330,12 @@ const Contact = () => {
                   </div>
                   <div className="flex items-center">
                     <Mail
-                      className="text-[#FFD700] mr-3 h-6 w-6"
+                      className="text-gold-500 mr-3 h-6 w-6"
                       aria-hidden="true"
                     />
                     <a
                       href={`mailto:${office.email}`}
-                      className="text-gray-700 hover:text-[#FFD700] transition-colors font-medium"
+                      className="text-gray-700 hover:text-gold-500 transition-colors font-medium"
                       aria-label={`Email ${office.name} at ${office.email}`}
                     >
                       {office.email}
@@ -317,7 +343,7 @@ const Contact = () => {
                   </div>
                   <div className="flex items-center">
                     <Clock
-                      className="text-[#FFD700] mr-3 h-6 w-6"
+                      className="text-gold-500 mr-3 h-6 w-6"
                       aria-hidden="true"
                     />
                     <span className="text-gray-700 font-medium">
@@ -336,7 +362,7 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-['Montserrat'] tracking-tight">
-              Find <span className="text-[#FFD700]">Us</span>
+              Find <span className="text-gold-500">Us</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Visit our main office in Addis Ababa or our branch in Adama.
@@ -362,7 +388,7 @@ const Contact = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-['Montserrat'] tracking-tight">
-              Send Us a <span className="text-[#FFD700]">Message</span>
+              Send Us a <span className="text-gold-500">Message</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Have a project in mind? Let's discuss how we can help bring your
@@ -387,7 +413,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFD700] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all"
                     placeholder="Your full name"
                     aria-required="true"
                   />
@@ -406,7 +432,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFD700] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all"
                     placeholder="your@email.com"
                     aria-required="true"
                   />
@@ -426,7 +452,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#FFD700] focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-gray-200 text-black/80 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all"
                   placeholder="Tell us about your project..."
                   aria-required="true"
                 ></textarea>
@@ -447,9 +473,10 @@ const Contact = () => {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="bg-[#FFD700] text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-[#E6C200] transition-all shadow-md hover:shadow-lg"
+                  disabled={isSubmitting}
+                  className="bg-gold-500 text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-gold-600 transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
               </div>
             </form>
@@ -462,7 +489,7 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 font-['Montserrat'] tracking-tight">
-              Quick <span className="text-[#FFD700]">Contact</span>
+              Quick <span className="text-gold-500">Contact</span>
             </h2>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Get in touch with us through your preferred method.
@@ -471,7 +498,7 @@ const Contact = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="quick-contact-card text-center p-6 rounded-xl bg-white/10 backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
-              <div className="w-12 h-12 bg-[#FFD700] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Phone className="h-6 w-6 text-gray-900" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-semibold mb-2 font-['Montserrat']">
@@ -480,14 +507,14 @@ const Contact = () => {
               <p className="text-gray-300 mb-2">Addis Ababa Office</p>
               <a
                 href="tel:+251911123456"
-                className="text-[#FFD700] hover:text-[#E6C200] transition-colors font-medium"
+                className="text-gold-500 hover:text-gold-600 transition-colors font-medium"
                 aria-label="Call Addis Ababa Office at +251 (0) 911-123-456"
               >
                 +251 (0) 911-123-456
               </a>
             </div>
             <div className="quick-contact-card text-center p-6 rounded-xl bg-white/10 backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
-              <div className="w-12 h-12 bg-[#FFD700] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="h-6 w-6 text-gray-900" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-semibold mb-2 font-['Montserrat']">
@@ -496,14 +523,14 @@ const Contact = () => {
               <p className="text-gray-300 mb-2">General Inquiries</p>
               <a
                 href="mailto:hello@impactproduction.com"
-                className="text-[#FFD700] hover:text-[#E6C200] transition-colors font-medium"
+                className="text-gold-500 hover:text-gold-600 transition-colors font-medium"
                 aria-label="Email us at hello@impactproduction.com"
               >
                 hello@impactproduction.com
               </a>
             </div>
             <div className="quick-contact-card text-center p-6 rounded-xl bg-white/10 backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
-              <div className="w-12 h-12 bg-[#FFD700] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gold-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
                   className="h-6 w-6 text-gray-900"
                   fill="none"
@@ -525,7 +552,7 @@ const Contact = () => {
               <p className="text-gray-300 mb-2">Available 24/7</p>
               <button
                 onClick={() => alert("Live chat feature coming soon!")}
-                className="text-[#FFD700] hover:text-[#E6C200] transition-colors font-medium"
+                className="text-gold-500 hover:text-gold-600 transition-colors font-medium"
                 aria-label="Start live chat"
               >
                 Start Chat
@@ -540,7 +567,7 @@ const Contact = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-['Montserrat'] tracking-tight">
-              Frequently Asked <span className="text-[#FFD700]">Questions</span>
+              Frequently Asked <span className="text-gold-500">Questions</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Common questions about our services and process.
