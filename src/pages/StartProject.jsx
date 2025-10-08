@@ -73,23 +73,23 @@ const StartProject = () => {
     }
   };
 
-  const floatingShapes = Array.from({ length: 15 }, (_, i) => ({
+  const floatingShapes = Array.from({ length: 10 }, (_, i) => ({
     id: i,
-    size: Math.random() * 60 + 20,
+    size: Math.random() * 50 + 20,
     x: Math.random() * 100,
     y: Math.random() * 100,
     delay: Math.random() * 5,
-    duration: Math.random() * 10 + 10,
+    duration: Math.random() * 12 + 8,
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-[#cccccc] relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {floatingShapes.map((shape) => (
           <div
             key={shape.id}
-            className="floating-shape absolute rounded-full bg-gradient-to-r from-yellow-400/10 to-amber-600/10 backdrop-blur-sm"
+            className="floating-shape absolute rounded-full bg-black/10 backdrop-blur-sm"
             style={{
               width: `${shape.size}px`,
               height: `${shape.size}px`,
@@ -97,24 +97,24 @@ const StartProject = () => {
               top: `${shape.y}%`,
               animationDelay: `${shape.delay}s`,
               animationDuration: `${shape.duration}s`,
-              transform: `rotate3d(${mousePosition.x}, ${mousePosition.y}, 0, 45deg)`,
+              transform: `rotate3d(${mousePosition.x}, ${mousePosition.y}, 0, 30deg)`,
             }}
           />
         ))}
       </div>
 
-      {/* Animated Grid */}
+      {/* Subtle Grid */}
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 215, 0, 0.1) 1px, transparent 1px)
           `,
-          backgroundSize: "50px 50px",
+          backgroundSize: "40px 40px",
           transform: `perspective(1000px) rotateX(${
-            mousePosition.y * 5
-          }deg) rotateY(${mousePosition.x * 5}deg)`,
+            mousePosition.y * 3
+          }deg) rotateY(${mousePosition.x * 3}deg)`,
           transition: "transform 0.1s ease-out",
         }}
       />
@@ -122,59 +122,57 @@ const StartProject = () => {
       <div className="relative z-10 flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div
           ref={formRef}
-          className="max-w-3xl w-full space-y-8 transform-gpu"
+          className="max-w-2xl w-full space-y-8 transform-gpu"
           style={{
             transform: `perspective(1000px) rotateX(${
-              mousePosition.y * 2
-            }deg) rotateY(${mousePosition.x * 2}deg) scale3d(1, 1, 1)`,
+              mousePosition.y * 1.5
+            }deg) rotateY(${mousePosition.x * 1.5}deg) scale3d(1, 1, 1)`,
             transition: "transform 0.2s ease-out",
           }}
         >
-          {/* Animated Header */}
+          {/* Header */}
           <div className="text-center relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/20 to-yellow-600/20 rounded-2xl blur-xl opacity-75 animate-pulse" />
-            <h1 className="text-5xl md:text-6xl font-bold text-white relative">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-500 animate-gradient-x">
+            <div className="absolute -inset-4 bg-gradient-to-r from-black/5 to-gold/10 rounded-2xl blur-xl opacity-50 animate-pulse" />
+            <h1 className="text-5xl md:text-6xl font-extrabold text-black relative">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-black to-[#D4AF37]">
                 Start Your Project
               </span>
             </h1>
-            <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Let's bring your event or project to life! Collaborate with our
-              expert teams in
-              <span className="text-amber-300 font-semibold">
-                {" "}
+            <p className="mt-4 text-lg text-gray-700 max-w-lg mx-auto leading-relaxed">
+              Collaborate with our expert teams in{" "}
+              <span className="text-gold font-semibold">
                 IT, Graphic Design, Design, and Marketing
-              </span>
-              .
+              </span>{" "}
+              to bring your vision to life.
             </p>
-            <div className="mt-4 text-amber-300 font-semibold text-xl animate-bounce">
+            <div className="mt-3 text-black font-medium text-lg animate-pulse">
               Contact us at: +251953454460
             </div>
           </div>
 
-          {/* 3D Form Container */}
+          {/* Form Container */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-8 bg-gray-900/60 backdrop-blur-xl p-8 rounded-3xl border border-amber-500/30 shadow-2xl relative overflow-hidden"
+            className="space-y-8 bg-[#eeeeee] backdrop-blur-lg p-8 rounded-2xl border border-gold/20 shadow-2xl relative overflow-hidden"
             style={{
               transform: `perspective(1000px) rotateX(${
-                mousePosition.y * 1
-              }deg) rotateY(${mousePosition.x * 1}deg) translateZ(20px)`,
+                mousePosition.y * 0.5
+              }deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
               boxShadow: `
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                ${mousePosition.x * 10}px ${
-                mousePosition.y * 10
-              }px 30px rgba(212, 175, 55, 0.2)
+                0 15px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                ${mousePosition.x * 5}px ${
+                mousePosition.y * 5
+              }px 20px rgba(255, 215, 0, 0.15)
               `,
             }}
           >
             {/* Form Glow Effect */}
             <div
-              className="absolute -inset-4 bg-gradient-to-r from-amber-400/10 to-transparent to-90% rounded-3xl blur-xl opacity-50"
+              className="absolute -inset-4 bg-gradient-to-r from-gold/10 to-transparent rounded-2xl blur-xl opacity-40"
               style={{
-                transform: `translateX(${mousePosition.x * 20}px) translateY(${
-                  mousePosition.y * 20
+                transform: `translateX(${mousePosition.x * 15}px) translateY(${
+                  mousePosition.y * 15
                 }px)`,
               }}
             />
@@ -226,9 +224,9 @@ const StartProject = () => {
                 />
               </div>
 
-              {/* Event Type - Full Width */}
+              {/* Event Type */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-amber-300 mb-3 ml-1">
+                <label className="block text-sm font-medium text-gold mb-2 ml-1">
                   Event Type
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -247,13 +245,13 @@ const StartProject = () => {
                           eventType: event.value,
                         }))
                       }
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                      className={`p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${
                         formData.eventType === event.value
-                          ? "border-amber-400 bg-amber-400/20 text-amber-300 shadow-lg shadow-amber-500/25"
-                          : "border-gray-600 bg-gray-800/50 text-gray-300 hover:border-amber-500/50"
+                          ? "border-gold bg-gold/20 text-black shadow-md shadow-gold/30"
+                          : "border-gray-300 bg-gray-100 text-gray-700 hover:border-gold/50"
                       }`}
                     >
-                      <div className="text-2xl mb-1">{event.emoji}</div>
+                      <div className="text-xl mb-1">{event.emoji}</div>
                       <div className="text-sm font-medium">{event.label}</div>
                     </button>
                   ))}
@@ -262,35 +260,19 @@ const StartProject = () => {
 
               {/* Departments */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-amber-300 mb-3 ml-1">
+                <label className="block text-sm font-medium text-gold mb-2 ml-1">
                   Departments Needed
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    {
-                      value: "IT",
-                      icon: "💻",
-                      color: "from-blue-500 to-cyan-500",
-                    },
-                    {
-                      value: "Graphic Design",
-                      icon: "🎨",
-                      color: "from-purple-500 to-pink-500",
-                    },
-                    {
-                      value: "Design",
-                      icon: "✏️",
-                      color: "from-green-500 to-emerald-500",
-                    },
-                    {
-                      value: "Marketing",
-                      icon: "📈",
-                      color: "from-orange-500 to-red-500",
-                    },
+                    { value: "IT", icon: "💻" },
+                    { value: "Graphic Design", icon: "🎨" },
+                    { value: "Design", icon: "✏️" },
+                    { value: "Marketing", icon: "📈" },
                   ].map((dep) => (
                     <label
                       key={dep.value}
-                      className={`department-checkbox cursor-pointer transform transition-all duration-300 hover:scale-105 ${
+                      className={`cursor-pointer transform transition-all duration-300 hover:scale-105 ${
                         formData.departments.includes(dep.value)
                           ? "checked"
                           : ""
@@ -305,13 +287,13 @@ const StartProject = () => {
                         className="hidden"
                       />
                       <div
-                        className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                        className={`p-4 rounded-lg border-2 transition-all duration-300 ${
                           formData.departments.includes(dep.value)
-                            ? `border-transparent bg-gradient-to-br ${dep.color} text-white shadow-lg`
-                            : "border-gray-600 bg-gray-800/50 text-gray-400"
+                            ? "border-gold bg-gold/20 text-black shadow-md shadow-gold/30"
+                            : "border-gray-300 bg-gray-100 text-gray-700"
                         }`}
                       >
-                        <div className="text-2xl mb-2">{dep.icon}</div>
+                        <div className="text-xl mb-2">{dep.icon}</div>
                         <div className="text-sm font-medium text-center">
                           {dep.value}
                         </div>
@@ -323,7 +305,7 @@ const StartProject = () => {
 
               {/* Details */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-amber-300 mb-3 ml-1">
+                <label className="block text-sm font-medium text-gold mb-2 ml-1">
                   Project Details
                 </label>
                 <div className="relative">
@@ -333,12 +315,12 @@ const StartProject = () => {
                     onChange={handleChange}
                     onFocus={() => setActiveField("details")}
                     onBlur={() => setActiveField(null)}
-                    className="w-full h-32 px-4 py-3 bg-gray-800/50 border-2 border-gray-600 rounded-xl text-white placeholder-gray-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-300 resize-none backdrop-blur-sm"
+                    className="w-full h-28 px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-black placeholder-gray-400 focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300 resize-none"
                     placeholder="Tell us about your project or event..."
                     style={{
                       transform:
                         activeField === "details"
-                          ? "translateZ(10px)"
+                          ? "translateZ(8px)"
                           : "translateZ(0)",
                     }}
                   />
@@ -350,18 +332,18 @@ const StartProject = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="text-center pt-6 relative z-10">
+            <div className="text-center pt-4 relative z-10">
               <HolographicButton
                 type="submit"
                 disabled={isSubmitting}
                 className="relative overflow-hidden group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-xl" />
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative px-8 py-4 text-black font-bold text-lg tracking-wider">
+                <div className="absolute inset-0 bg-gradient-to-r from-white to-gold rounded-lg" />
+                <div className="absolute inset-0 bg-gradient-to-r from-gold to-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative px-8 py-3 text-black font-semibold text-lg tracking-wide">
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
+                      <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2" />
                       Submitting...
                     </div>
                   ) : (
@@ -377,7 +359,7 @@ const StartProject = () => {
   );
 };
 
-// Improved Floating Label Input Component
+// Floating Label Input Component
 const FloatingLabel = ({
   id,
   label,
@@ -410,31 +392,27 @@ const FloatingLabel = ({
           onFocus={onFocus}
           onBlur={onBlur}
           required={required}
-          className="w-full px-4 py-4 bg-gray-800/50 rounded-xl text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all duration-300 peer backdrop-blur-sm"
+          className="w-full px-4 py-3 bg-white rounded-lg text-black placeholder-transparent focus:outline-none focus:ring-2 focus:ring-gold/30 transition-all duration-300 peer border border-gray-300"
           placeholder={label}
           style={{
-            transform: isActive ? "translateZ(10px)" : "translateZ(0)",
+            transform: isActive ? "translateZ(8px)" : "translateZ(0)",
           }}
         />
-
-        {/* Bottom border line */}
         <div
-          className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-300 ${
+          className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-black to-gold transition-all duration-300 ${
             isActive ? "opacity-100 scale-100" : "opacity-50 scale-95"
           }`}
         />
-
-        {/* Floating label */}
         <label
           htmlFor={id}
           className={`absolute left-4 transition-all duration-300 pointer-events-none ${
             hasValue || isActive
-              ? "top-1 text-amber-300 text-xs font-medium transform -translate-y-2 bg-gray-900 px-2 rounded-lg"
-              : "top-4 text-gray-400 text-base"
-          } ${isActive ? "text-amber-300" : ""}`}
+              ? "top-0.5 text-gold text-xs font-medium transform -translate-y-2 bg-white px-1 rounded"
+              : "top-3 text-gray-600 text-sm"
+          } ${isActive ? "text-gold" : ""}`}
         >
           {label}
-          {required && <span className="text-amber-400 ml-1">*</span>}
+          {required && <span className="text-gold ml-1">*</span>}
         </label>
       </div>
     </div>
@@ -448,8 +426,8 @@ const HolographicButton = ({ children, ...props }) => {
       {...props}
       className="relative overflow-hidden group transform transition-transform duration-300 hover:scale-105"
     >
-      <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-400 rounded-xl blur-sm opacity-75 group-hover:opacity-100 group-hover:blur-md transition-all duration-300 animate-gradient-xy" />
-      <div className="relative bg-gradient-to-r from-amber-300 to-yellow-400 rounded-xl shadow-2xl group-hover:shadow-amber-500/25 transition-all duration-300">
+      <div className="absolute -inset-1 bg-gradient-to-r from-white to-gold rounded-lg blur-sm opacity-60 group-hover:opacity-100 group-hover:blur-md transition-all duration-300" />
+      <div className="relative bg-gradient-to-r from-white to-gold rounded-lg shadow-lg group-hover:shadow-gold/30 transition-all duration-300">
         {children}
       </div>
     </button>
