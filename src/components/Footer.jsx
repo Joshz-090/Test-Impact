@@ -222,6 +222,7 @@ const Footer = () => {
                 { href: "/portfolio", text: "Portfolio" },
                 { href: "/events", text: "Events" },
                 { href: "/contact", text: "Contact" },
+                { href: "/admin", text: "Admin" },
               ].map((item, index) => (
                 <motion.li
                   key={index}
