@@ -6,12 +6,12 @@
   "homepage": "https://Joshz-090.github.io/Test-Impact",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "postbuild": "copy public\\_redirects dist\\_redirects"
+    "build": "vite build",
+    "postbuild": "cpy public/_redirects dist"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
