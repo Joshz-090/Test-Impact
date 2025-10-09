@@ -688,7 +688,8 @@
   }
 }
 
-* Custom gold color */ .bg-gold-500 {
+/* Custom gold color */
+.bg-gold-500 {
   background-color: #d4af37;
 }
 .hover\:bg-gold-600:hover {
