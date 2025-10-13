@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope } from "react-icons/fa";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaEnvelope,
+  FaBehance,
+} from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import img from "../../assets/images/R/images.png";
@@ -10,161 +16,166 @@ import Fitsum from "../../assets/images/members/Fitsum.png";
 import yohanes from "../../assets/images/members/yohanes.png";
 import tsehay from "../../assets/images/members/tsehay.png";
 import Mikias from "../../assets/images/members/Mikias.png";
-import Nahome from "../../assets/images/members/nahome.png";
+import Eyasu from "../../assets/images/members/eyasu.png";
 
 const MainTeam = () => {
+  // Explicit reference to satisfy some linters that may not detect JSX usage
+  const __framerMotion = motion;
   const [visibleMembers, setVisibleMembers] = useState(6);
   const [showAllMessage, setShowAllMessage] = useState(false);
   const [filter, setFilter] = useState("all");
   const [sortedMembers, setSortedMembers] = useState([]);
   const [expandedCards, setExpandedCards] = useState({});
 
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Sosina Eshetu",
-      position: "CEO & Founder",
-      description:
-        "Event Organizer and Artist with over 10 years of experience. A young female leader dynamic and accomplished individual with a diverse skill set spanning event organization, team leadership, and creative entrepreneurship.",
-      image: sosina, // Use the imported sosina image
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "sosina@impact.com",
+  const teamMembers = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Sosina Eshetu",
+        position: "CEO & Founder",
+        description:
+          "Event Organizer and Artist with over 10 years of experience. A young female leader dynamic and accomplished individual with a diverse skill set spanning event organization, team leadership, and creative entrepreneurship.",
+        image: sosina, // Use the imported sosina image
+        social: {
+          linkedin: "#",
+          twitter: "#",
+          email: "sosina@impact.com",
+        },
+        department: "executive",
+        isExecutive: true,
       },
-      department: "executive",
-      isExecutive: true,
-    },
-    {
-      id: 2,
-      name: "Kalkidan Nega",
-      position: "Managing Director",
-      description:
-        "Architect and versatile professional excelling in digital marketing, graphic design, content creation, architectural design, and interior design.",
-      image: kalkidan, // Use the imported kalkidan image
-      social: {
-        linkedin: "#",
-        instagram: "#",
-        email: "kalkidan@impact.com",
+      {
+        id: 2,
+        name: "Kalkidan Nega",
+        position: "Managing Director",
+        description:
+          "Architect and versatile professional excelling in digital marketing, graphic design, content creation, architectural design, and interior design.",
+        image: kalkidan, // Use the imported kalkidan image
+        social: {
+          linkedin: "#",
+          instagram: "#",
+          email: "kalkidan@impact.com",
+        },
+        department: "executive",
+        isExecutive: true,
       },
-      department: "executive",
-      isExecutive: true,
-    },
-    {
-      id: 3,
-      name: "Mikias Tadese",
-      position: "Construction Department Manager",
-      description:
-        "Architect with a strong background in architecture and construction management. A talented individual with extensive experience in construction projects.",
-      image: Mikias, // Use the imported Mikias image
-      social: {
-        linkedin: "#",
-        email: "mikias@impact.com",
+      {
+        id: 3,
+        name: "Mikias Tadese",
+        position: "Construction Department Manager",
+        description:
+          "Architect with a strong background in architecture and construction management. A talented individual with extensive experience in construction projects.",
+        image: Mikias, // Use the imported Mikias image
+        social: {
+          linkedin: "#",
+          email: "mikias@impact.com",
+        },
+        department: "construction",
+        isPriority: true,
       },
-      department: "construction",
-      isPriority: true,
-    },
-    {
-      id: 4,
-      name: "Fitsum Bereket",
-      position: "Event Organizer Department Manager",
-      description:
-        "Skilled designer and event management professional with talent for organizing events and managing teams effectively.",
-      image: Fitsum, // You'll need to import Fitsum's image
-      social: {
-        linkedin: "#",
-        instagram: "#",
-        email: "fitsum@impact.com",
+      {
+        id: 4,
+        name: "Fitsum Bereket",
+        position: "Event Organizer Department Manager",
+        description:
+          "Skilled designer and event management professional with talent for organizing events and managing teams effectively.",
+        image: Fitsum, // You'll need to import Fitsum's image
+        social: {
+          linkedin: "#",
+          instagram: "#",
+          email: "fitsum@impact.com",
+        },
+        department: "events",
       },
-      department: "events",
-    },
-    {
-      id: 5,
-      name: "Lijeshet Abebe",
-      position: "Art Department Manager",
-      description:
-        "Hyper-realistic artist specializing in custom graphite drawings, with additional expertise in social media management.",
-      image: Lijeshet, // Use the imported Lijeshet image
-      social: {
-        linkedin: "#",
-        instagram: "#",
-        email: "lijeshet@impact.com",
+      {
+        id: 5,
+        name: "Lijeshet Abebe",
+        position: "Art Department Manager",
+        description:
+          "Hyper-realistic artist specializing in custom graphite drawings, with additional expertise in social media management.",
+        image: Lijeshet, // Use the imported Lijeshet image
+        social: {
+          linkedin: "#",
+          instagram: "#",
+          email: "lijeshet@impact.com",
+        },
+        department: "art",
+        isPriority: true,
       },
-      department: "art",
-      isPriority: true,
-    },
-    {
-      id: 6,
-      name: "Yohanes Ayalew",
-      position: "Design and Marketing Department Manager",
-      description:
-        "Talented designer who excels at managing multiple projects effectively with strong organizational skills and marketing expertise.",
-      image: yohanes, // Use the imported yohanes image
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "yohanes@impact.com",
+      {
+        id: 6,
+        name: "Yohanes Ayalew",
+        position: "Design and Marketing Department Manager",
+        description:
+          "Talented designer who excels at managing multiple projects effectively with strong organizational skills and marketing expertise.",
+        image: yohanes, // Use the imported yohanes image
+        social: {
+          linkedin: "#",
+          twitter: "#",
+          email: "yohanes@impact.com",
+        },
+        department: "design",
       },
-      department: "design",
-    },
-    // Keep the rest of your team members or remove them if not needed
-    {
-      id: 7,
-      name: "Tsehay Asefa",
-      position: "Teaching and Fine Art Division Head",
-      description:
-        "Talented fine art artist who has successfully translated her passion into a thriving business, participating in numerous art exhibitions.",
-      image: tsehay, // Use the imported tsehay image
-      social: {
-        linkedin: "#",
-        instagram: "#",
-        email: "tsehay@impact.com",
+      // Keep the rest of your team members or remove them if not needed
+      {
+        id: 7,
+        name: "Tsehay Asefa",
+        position: "Teaching and Fine Art Division Head",
+        description:
+          "Talented fine art artist who has successfully translated her passion into a thriving business, participating in numerous art exhibitions.",
+        image: tsehay, // Use the imported tsehay image
+        social: {
+          linkedin: "#",
+          instagram: "#",
+          email: "tsehay@impact.com",
+        },
+        department: "art",
       },
-      department: "art",
-    },
-    {
-      id: 8,
-      name: "Nahom Getnet",
-      position: "IT Department Manager",
-      description:
-        "Web development specialist with a computer science background, combining technical expertise with creative solutions.",
-      image: Nahome,
-      social: {
-        linkedin: "#",
-        email: "nahom@impact.com",
+      {
+        id: 8,
+        name: "Eyasu Zerihun",
+        position: "IT Department Manager",
+        description:
+          "Web development specialist with a computer science background, combining technical expertise with creative solutions.",
+        image: Eyasu,
+        social: {
+          linkedin: "#",
+          email: "eyasuzerihun@gmail.com",
+        },
+        department: "technology",
       },
-      department: "technology",
-    },
 
-    {
-      id: 9,
-      name: "Tewodros Kebede",
-      position: "Content Producer",
-      description:
-        "Writer and content strategist with a background in journalism.",
-      image: img,
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "tewodros@impact.com",
+      {
+        id: 9,
+        name: "Tewodros Kebede",
+        position: "Content Producer",
+        description:
+          "Writer and content strategist with a background in journalism.",
+        image: img,
+        social: {
+          linkedin: "#",
+          twitter: "#",
+          email: "tewodros@impact.com",
+        },
+        department: "content",
       },
-      department: "content",
-    },
-    {
-      id: 10,
-      name: "Alemitu Fikre",
-      position: "Community Manager",
-      description:
-        "Engagement specialist focused on building creative communities.",
-      image: img,
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "alemitu@impact.com",
+      {
+        id: 10,
+        name: "Alemitu Fikre",
+        position: "Community Manager",
+        description:
+          "Engagement specialist focused on building creative communities.",
+        image: img,
+        social: {
+          linkedin: "#",
+          twitter: "#",
+          email: "alemitu@impact.com",
+        },
+        department: "community",
       },
-      department: "community",
-    },
-  ];
+    ],
+    []
+  );
 
   useEffect(() => {
     let filtered = [...teamMembers];
@@ -185,7 +196,7 @@ const MainTeam = () => {
     setSortedMembers(filtered);
     setVisibleMembers(6);
     setShowAllMessage(false);
-  }, [filter]);
+  }, [filter, teamMembers]);
 
   const loadMoreMembers = () => {
     if (visibleMembers >= sortedMembers.length) {
@@ -292,7 +303,7 @@ const MainTeam = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 justify-items-center"
               >
                 {executiveMembers.map((member) => (
                   <motion.div
@@ -301,7 +312,7 @@ const MainTeam = () => {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="bg-white rounded-xl shadow-lg border border-[#D4AF37]/30 overflow-hidden hover:shadow-xl transition-all"
+                    className="bg-white rounded-xl shadow-lg border border-[#D4AF37]/30 overflow-hidden hover:shadow-xl transition-all mx-auto w-full max-w-[350px] md:max-w-none"
                     role="article"
                     aria-labelledby={`executive-${member.id}`}
                   >
@@ -319,35 +330,35 @@ const MainTeam = () => {
                           />
                         </div>
                       </div>
-                      <div className="md:w-2/3 p-6 flex flex-col justify-center relative">
+                      <div className="md:w-2/3 p-6 flex flex-col justify-center relative text-center md:text-left items-center md:items-start">
                         {/* Premium badge with subtle animation */}
                         <motion.span
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#8E6C29] to-[#D4AF37] text-white text-xs font-bold tracking-wider rounded-full mb-3 shadow-lg self-start"
+                          className="inline-block px-3 py-1.5 bg-gradient-to-r from-[#8E6C29] to-[#D4AF37] text-white text-xs font-bold tracking-wider rounded-full mb-3 shadow-lg self-center md:self-start"
                         >
                           EXECUTIVE LEADERSHIP
                         </motion.span>
 
                         {/* Name with elegant underline effect */}
-                        <div className="relative mb-2">
+                        <div className="relative mb-2 w-full flex justify-center md:justify-start">
                           <h3
                             className="text-2xl font-bold text-gray-900 mb-1 font-montserrat"
                             id={`executive-${member.id}`}
                           >
                             {member.name}
                           </h3>
-                          <div className="h-1 w-12 bg-[#D4AF37] rounded-full"></div>
+                          <div className="h-1 w-12 bg-[#D4AF37] rounded-full absolute -bottom-1 left-1/2 -translate-x-1/2 md:static md:translate-x-0"></div>
                         </div>
 
                         {/* Position with golden text and subtle shadow */}
-                        <p className="text-[#D4AF37] text-lg font-semibold mb-4 tracking-wide relative">
+                        <p className="text-[#D4AF37] text-lg font-semibold mb-4 tracking-wide relative text-center md:text-left">
                           {member.position}
-                          <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50"></span>
+                          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-50"></span>
                         </p>
 
                         {/* Description with improved typography */}
-                        <p className="text-gray-700 text-sm mb-3 leading-relaxed border-l-3 border-[#D4AF37] pl-4 italic">
+                        <p className="text-gray-700 text-sm mb-3 leading-relaxed italic border-0 md:border-l-3 md:pl-4 text-center md:text-left">
                           {expandedCards[member.id]
                             ? member.description
                             : `${member.description.substring(0, 100)}...`}
@@ -364,7 +375,7 @@ const MainTeam = () => {
                         </p>
 
                         {/* Social links with enhanced styling */}
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4 justify-center md:justify-start">
                           {member.social.linkedin && (
                             <motion.a
                               whileHover={{ y: -3 }}
@@ -431,7 +442,7 @@ const MainTeam = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 justify-center"
               >
                 {nonExecutiveMembers.map((member) => (
                   <motion.div
@@ -440,7 +451,7 @@ const MainTeam = () => {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all"
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all mx-auto w-full max-w-[300px]"
                     role="article"
                     aria-labelledby={`member-${member.id}`}
                   >
@@ -457,6 +468,7 @@ const MainTeam = () => {
                         />
                       </div>
                     </div>
+
                     <div className="p-4 text-center">
                       <h3
                         className="text-lg font-bold text-gray-900 mb-1 font-montserrat"
@@ -464,9 +476,11 @@ const MainTeam = () => {
                       >
                         {member.name}
                       </h3>
+
                       <p className="text-[#D4AF37] text-sm font-semibold mb-2">
                         {member.position}
                       </p>
+
                       <p className="text-gray-700 text-sm mb-3 leading-relaxed border-l-3 border-[#D4AF37] pl-4 italic">
                         {expandedCards[member.id]
                           ? member.description
@@ -482,6 +496,7 @@ const MainTeam = () => {
                           </button>
                         )}
                       </p>
+
                       <div className="flex justify-center space-x-2">
                         {member.social.linkedin && (
                           <a
@@ -525,13 +540,8 @@ const MainTeam = () => {
                             className="text-gray-400 hover:text-[#D4AF37]"
                             aria-label={`Behance profile of ${member.name}`}
                           >
-                            <svg
-                              className="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.507.109 1.188.109 1.757h-5.147c.001 1.885.791 3.12 2.766 3.12 1.203 0 2.151-.541 2.658-1.508h2.438zm-2.827-3.622c-.374-1.185-1.282-2.098-2.775-2.098-1.711 0-2.618 1.093-2.618 2.719 0 1.695.951 2.601 2.633 2.601 1.432 0 2.53-1.074 2.76-2.222h-2.76zm-9.693-1.378h-3.606v-2h3.606v2zm0 3.378h-3.606v-2h3.606v2zm0 3.378h-3.606v-2h3.606v2zm-6.606-8.756c-2.297 0-4.394 1.831-4.394 5.756 0 3.926 2.297 5.756 4.394 5.756 2.096 0 4.394-1.83 4.394-5.756 0-3.925-2.098-5.756-4.394-5.756zm0 9.512c-1.695 0-2.971-1.411-2.971-3.756 0-2.347 1.276-3.756 2.971-3.756 1.694 0 2.971 1.409 2.971 3.756 0 2.345-1.277 3.756-2.971 3.756z" />
-                            </svg>
+                            {/* Replace with React icon (you'll import it) */}
+                            <FaBehance className="w-4 h-4" />
                           </a>
                         )}
                       </div>
