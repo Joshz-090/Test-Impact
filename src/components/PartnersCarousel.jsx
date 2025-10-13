@@ -3,15 +3,15 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { motion, useReducedMotion } from "framer-motion";
 
-import partner1 from "../assets/images/partner/Abogida.png";
-import partner2 from "../assets/images/partner/all-God.png";
-import partner3 from "../assets/images/partner/Bethel.png";
-import partner4 from "../assets/images/partner/CoSAP.png";
+import partner1 from "../assets/images/partner/abugida.png";
+import partner2 from "../assets/images/partner/CoSAP.png";
+import partner3 from "../assets/images/partner/all-God.png";
+import partner4 from "../assets/images/partner/Bethel.png";
 import partner5 from "../assets/images/partner/Delasalle.png";
-import partner6 from "../assets/images/partner/markonal.png";
-import partner7 from "../assets/images/partner/Painters-and-Sculptors.png";
+import partner6 from "../assets/images/partner/Painters-and-Sculptors.png";
+import partner7 from "../assets/images/partner/wedeenat.png";
 import partner8 from "../assets/images/partner/s.png";
-import partner9 from "../assets/images/partner/Simple-Restaorant.png";
+import partner9 from "../assets/images/partner/markonal.png";
 import partner10 from "../assets/images/partner/tsehay.png";
 import partner11 from "../assets/images/partner/visual.png";
 

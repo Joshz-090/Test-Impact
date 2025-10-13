@@ -9,12 +9,14 @@ import {
   limit,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
+import HoverSection from "./HoverSection";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // "success" or "error"
+  const [messageType, setMessageType] = useState("");
 
   const showMessage = (text, type) => {
     setMessage(text);
@@ -115,6 +117,24 @@ const Footer = () => {
     },
   };
 
+  const socialLinks = [
+    {
+      name: "Twitter",
+      icon: <FaTwitter className="w-6 h-6" />,
+      href: "https://twitter.com/ImpactProduction", // Replace with actual link
+    },
+    {
+      name: "LinkedIn",
+      icon: <FaLinkedin className="w-6 h-6" />,
+      href: "https://www.linkedin.com/company/impact-production", // Replace with actual link
+    },
+    {
+      name: "Instagram",
+      icon: <FaInstagram className="w-6 h-6" />,
+      href: "https://www.instagram.com/impactproduction", // Replace with actual link
+    },
+  ];
+
   return (
     <footer className="bg-gradient-to-b from-black to-gray-900 text-white py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -127,44 +147,48 @@ const Footer = () => {
           {/* Company Info */}
           <motion.div
             variants={fadeInUp}
-            className="space-y-4 transform transition-transform hover:scale-105 duration-300"
+            initial="initial"
+            animate="animate"
+            className="space-y-4 transform transition-transform duration-300"
           >
-            <h3 className="text-2xl font-bold text-[#D4AF37] font-['Montserrat'] mb-4">
+            <motion.h3
+              className="text-2xl font-bold text-[#D4AF37] font-['Montserrat'] mb-4 relative"
+              initial={{ scale: 1, textShadow: "0 0 0 rgba(212,175,55,0)" }}
+              whileHover={{
+                scale: 1.08,
+                color: "#FFD700", // brighter gold on hover
+                textShadow: "0 0 15px rgba(212,175,55,0.8)", // glow effect only on text
+                transition: { duration: 0.4, ease: "easeInOut" },
+              }}
+            >
               Impact Production
-            </h3>
+              <motion.span
+                className="absolute bottom-0 left-0 w-full h-[2px] bg-[#D4AF37] origin-left"
+                initial={{ scaleX: 0 }}
+                whileHover={{
+                  scaleX: 1,
+                  transition: { duration: 0.4, ease: "easeInOut" },
+                }}
+              />
+            </motion.h3>
+
             <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
               Promoting artistic excellence, fostering community connections,
               and empowering education through art and events across Ethiopia.
             </p>
-            <div className="flex space-x-4">
-              {[
-                {
-                  path: "M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z",
-                },
-                {
-                  path: "M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z",
-                },
-                {
-                  path: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
-                },
-                {
-                  path: "M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z",
-                },
-              ].map((icon, index) => (
+            <div className="flex space-x-6">
+              {socialLinks.map((link, index) => (
                 <motion.a
                   key={index}
-                  href="#"
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Follow us on ${link.name}`}
                   className="text-gray-400 hover:text-[#D4AF37] transform transition-all duration-300"
                   whileHover={{ scale: 1.3, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <svg
-                    className="w-6 h-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d={icon.path} />
-                  </svg>
+                  {link.icon}
                 </motion.a>
               ))}
             </div>
@@ -218,7 +242,7 @@ const Footer = () => {
               {[
                 { href: "/", text: "Home" },
                 { href: "/about", text: "About Us" },
-                { href: "/team", text: "Departments" },
+                { href: "/departments", text: "Departments" },
                 { href: "/portfolio", text: "Portfolio" },
                 { href: "/events", text: "Events" },
                 { href: "/contact", text: "Contact" },
@@ -243,52 +267,60 @@ const Footer = () => {
           {/* Contact Info */}
           <motion.div variants={fadeInUp} className="space-y-4">
             <h4 className="text-lg font-semibold text-[#D4AF37] font-['Montserrat']">
-              Contact
+              Contact Information
             </h4>
-            <div className="space-y-2 text-sm sm:text-base">
-              <motion.div
-                className="text-gray-300 flex items-center space-x-2"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
+
+            {/* Our Locations */}
+            <HoverSection
+              title="📍 Our Locations"
+              items={[
+                {
+                  label: "Addis Ababa, Ethiopia",
+                  link: "https://www.google.com/maps?q=Addis+Ababa,+Ethiopia",
+                },
+                {
+                  label: "Adama, Ethiopia",
+                  link: "https://www.google.com/maps?q=Adama,+Ethiopia",
+                },
+                {
+                  label: "Arba Minch, Ethiopia",
+                  link: "https://www.google.com/maps?q=Arba+Minch,+Ethiopia",
+                },
+                {
+                  label: "Jijiga, Ethiopia",
+                  link: "https://www.google.com/maps?q=Jijiga,+Ethiopia",
+                },
+              ]}
+            />
+
+            {/* Call Us */}
+            <HoverSection
+              title="📞 Call Us"
+              items={[
+                { label: "+251 (0) 939-228-142", link: "tel:+25139228142" },
+                { label: "+251 (0) 935-228-142", link: "tel:+251935228142" },
+              ]}
+            />
+
+            {/* Working Hours */}
+            <HoverSection
+              title="🕒 Working Hours"
+              items={["Monday – Friday: 9 AM – 6 PM", "Saturday: 9 AM – 1 PM"]}
+            />
+
+            {/* Email */}
+            <motion.div
+              className="flex items-center space-x-2 text-gray-300 hover:text-[#D4AF37] mt-4"
+              whileHover={{ scale: 1.05 }}
+            >
+              <span>📧</span>
+              <a
+                href="mailto:hello@impactproduction.com"
+                className="hover:underline transition-colors duration-300"
               >
-                <span>📍</span>
-                <span>Addis Ababa & Adama, Ethiopia</span>
-              </motion.div>
-              <motion.div
-                className="text-gray-300 flex items-center space-x-2"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <span>📧</span>
-                <a
-                  href="mailto:hello@impactproduction.com"
-                  className="hover:text-[#D4AF37] transition-colors duration-300 hover:underline"
-                >
-                  hello@impactproduction.com
-                </a>
-              </motion.div>
-              <motion.div
-                className="text-gray-300 flex items-center space-x-2"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <span>📞</span>
-                <a
-                  href="tel:+251911123456"
-                  className="hover:text-[#D4AF37] transition-colors duration-300 hover:underline"
-                >
-                  +251 (0) 911-123-456
-                </a>
-              </motion.div>
-              <motion.div
-                className="text-gray-300 flex items-center space-x-2"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <span>🕒</span>
-                <span>Mon-Fri: 9AM-6PM</span>
-              </motion.div>
-            </div>
+                hello@impactproduction.com
+              </a>
+            </motion.div>
           </motion.div>
         </motion.div>
 
