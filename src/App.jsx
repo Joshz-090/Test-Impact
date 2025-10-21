@@ -17,6 +17,7 @@ const LearnMore = lazy(() => import("./pages/LearnMore"));
 const ImpactDetail = lazy(() => import("./pages/ImpactDetail"));
 const StartProject = lazy(() => import("./pages/StartProject"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
+const Gallery = lazy(() => import("./pages/Gallery"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import { AuthProvider } from "./context/AuthContext";
 import { MetricsProvider } from "./context/MetricsContext";
@@ -36,6 +37,7 @@ const AdminAddMember = lazy(() => import("./pages/admin/AdminAddMember"));
 const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 const AdminSetup = lazy(() => import("./pages/admin/Setup"));
 const AdminContacts = lazy(() => import("./pages/admin/AdminContacts"));
+const AdminGallery = lazy(() => import("./pages/admin/AdminGallery"));
 
 // Scroll-to-top component
 function ScrollToTop() {
@@ -76,8 +78,7 @@ function AppContent() {
       {!location.pathname.startsWith("/admin") &&
         !location.pathname.startsWith("/start-project") &&
         !location.pathname.startsWith("/thank-you") &&
-        !location.pathname.startsWith("/impact") &&
-        !location.pathname.startsWith("/admin") && <Navbar />}
+        !location.pathname.startsWith("/impact") && <Navbar />}
       <ScrollToTop />
       <main>
         <ErrorBoundary>
@@ -102,6 +103,7 @@ function AppContent() {
               <Route path="/impact/:id" element={<ImpactDetail />} />
               <Route path="/start-project" element={<StartProject />} />
               <Route path="/thank-you" element={<ThankYou />} />
+              <Route path="/gallery" element={<Gallery />} />
 
               {/* Admin setup / login routes */}
               <Route path="/admin/setup" element={<AdminSetup />} />
@@ -128,6 +130,7 @@ function AppContent() {
                 <Route path="departments" element={<AdminDepartments />} />
                 <Route path="members" element={<AdminAddMember />} />
                 <Route path="contacts" element={<AdminContacts />} />
+                <Route path="gallery" element={<AdminGallery />} />
                 <Route
                   path="admins"
                   element={

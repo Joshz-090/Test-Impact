@@ -71,6 +71,7 @@ export default function AdminLayout() {
     { to: "/admin/events", label: "Events", icon: "🎉", end: false },
     { to: "/admin/departments", label: "Departments", icon: "🏢", end: false },
     { to: "/admin/members", label: "Members", icon: "👤", end: false },
+    { to: "/admin/gallery", label: "Gallery", icon: "📸", end: false },
     ...(role === "super"
       ? [{ to: "/admin/admins", label: "Admins", icon: "🔐", end: false }]
       : []),

@@ -6,6 +6,7 @@ import AboutSec from "./HoComp/AboutSec";
 import Stats from "./HoComp/Stats";
 import ServiceSec from "./HoComp/ServiceSec";
 import MainTeam from "./HoComp/MainTeam";
+import GallerySection from "./HoComp/GallerySection";
 import backgroundImage from "../assets/images/R/Screenshot.png";
 
 const Home = () => {
@@ -63,6 +64,7 @@ const Home = () => {
         backgroundImage={backgroundImage}
       />
       <ServiceSec />
+      <GallerySection />
       <MainTeam />
       {/* Key Achievements Section */}
       <section className="py-16 bg-gray-50">
