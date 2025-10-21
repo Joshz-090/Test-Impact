@@ -255,9 +255,12 @@ const MainTeam = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-2xl sm:text-3xl font-bold uppercase tracking-wider font-montserrat text-black"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black mb-4 font-['Montserrat'] uppercase tracking-wider"
             >
-              Our <span className="text-[#D4AF37]">Team</span>
+              Our{" "}
+              <span className="text-gradient bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                Team
+              </span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}

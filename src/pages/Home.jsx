@@ -7,6 +7,7 @@ import Stats from "./HoComp/Stats";
 import ServiceSec from "./HoComp/ServiceSec";
 import MainTeam from "./HoComp/MainTeam";
 import GallerySection from "./HoComp/GallerySection";
+import TestimonialsSection from "./HoComp/TestimonialsSection";
 import backgroundImage from "../assets/images/R/Screenshot.png";
 
 const Home = () => {
@@ -114,6 +115,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <TestimonialsSection />
 
       <PartnersCarousel />
     </div>

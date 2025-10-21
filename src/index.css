@@ -624,7 +624,41 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 15s linear infinite;
+  animation: marquee 30s linear infinite;
+  transition: animation-play-state 0.3s ease;
+}
+
+/* Testimonials specific animations */
+@keyframes testimonials-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-testimonials-marquee {
+  animation: testimonials-marquee 30s linear infinite;
+}
+
+.animate-testimonials-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Testimonials card hover effects */
+.testimonial-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(212, 175, 55, 0.3);
+}
+
+/* Smooth scroll behavior for testimonials */
+.testimonials-section {
+  scroll-behavior: smooth;
 }
 
 /* StartProject3D.css - Updated for better floating labels */
